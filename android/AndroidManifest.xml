@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.distraction.sandbox" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="28" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
