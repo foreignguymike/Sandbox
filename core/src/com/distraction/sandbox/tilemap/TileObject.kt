@@ -11,6 +11,13 @@ abstract class TileObject(protected val context: Context, val tileMap: TileMap) 
     var col = 0
     var width = 0f
     var height = 0f
+    var remove = false
+
+    open fun setTile(row: Int, col: Int) {
+        this.row = row
+        this.col = col
+        tileMap.toPosition(row, col, p)
+    }
 
     abstract fun update(dt: Float)
     abstract fun render(sb: SpriteBatch)

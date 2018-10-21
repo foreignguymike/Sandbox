@@ -8,6 +8,7 @@ import com.distraction.sandbox.Background
 import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
 import com.distraction.sandbox.tilemap.Player
+import com.distraction.sandbox.tilemap.TileLight
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapData
 
@@ -25,8 +26,10 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     init {
-        camera.position.set(0f, -1000f, 0f)
+        camera.position.set(0f, 000f, 0f)
         camera.update()
+
+        tileMap.otherObjects.add(TileLight(context, tileMap, 0, 0))
     }
 
     override fun onMoved() {
@@ -49,6 +52,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         camera.update()
 
         bg.update(dt)
+        tileMap.update(dt)
     }
 
     override fun render(sb: SpriteBatch) {
@@ -61,6 +65,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         sb.begin()
         tileMap.render(sb)
         player.render(sb)
+        tileMap.renderOther(sb)
         sb.end()
     }
 }
