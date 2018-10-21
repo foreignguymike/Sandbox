@@ -30,7 +30,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
             for (col in 0 until levelData.numCols) {
                 val tile = getTile(row, col)
                 if (tile.value == 1) {
-                    toPerspective(col * TileMap.TILE_WIDTH, row * TileMap.TILE_WIDTH, p)
+                    toIsometric(col * TileMap.TILE_WIDTH, row * TileMap.TILE_WIDTH, p)
                     sb.draw(tile.getImage(), p.x - TILE_WIDTH / 2, p.y - TILE_HEIGHT * 2)
                 }
             }
@@ -42,7 +42,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
         p.y = row * TILE_WIDTH
     }
 
-    fun toPerspective(x: Float, y: Float, p: Vector3) {
+    fun toIsometric(x: Float, y: Float, p: Vector3) {
         val xo = x / TileMap.TILE_WIDTH
         val yo = y / TileMap.TILE_WIDTH
         p.x = (xo - yo) * TileMap.TILE_WIDTH / 2

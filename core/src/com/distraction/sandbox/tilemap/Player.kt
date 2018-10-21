@@ -1,6 +1,5 @@
 package com.distraction.sandbox.tilemap
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
@@ -91,7 +90,7 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
     }
 
     override fun render(sb: SpriteBatch) {
-        tileMap.toPerspective(p.x, p.y, pp)
+        tileMap.toIsometric(p.x, p.y, pp)
         if (direction == Direction.RIGHT || direction == Direction.UP) {
             sb.draw(animation.getImage(), pp.x - animation.getImage().regionWidth / 2, pp.y - animation.getImage().regionHeight / 2 + p.z)
         } else {
