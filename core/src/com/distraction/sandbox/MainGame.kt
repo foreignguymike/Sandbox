@@ -11,6 +11,8 @@ import com.distraction.sandbox.states.PlayState
 
 fun AssetManager.getAtlas(str: String = "sandboxpack.atlas") = get(str, TextureAtlas::class.java)
 
+fun log(str: String) = Gdx.app.log("tag", str)
+
 class MainGame : ApplicationAdapter() {
     private lateinit var sb: SpriteBatch
     private lateinit var gsm: GSM

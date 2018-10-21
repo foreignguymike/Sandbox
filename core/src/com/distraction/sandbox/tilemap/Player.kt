@@ -3,9 +3,7 @@ package com.distraction.sandbox.tilemap
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
-import com.distraction.sandbox.Animation
-import com.distraction.sandbox.Context
-import com.distraction.sandbox.getAtlas
+import com.distraction.sandbox.*
 
 class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) {
 
@@ -20,13 +18,21 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
     var totalDist = 0f
     var speed = 32f * 2
     var jumpHeight = 20f
-    val animation = Animation(context.assets.getAtlas().findRegion("playersprites").split(14, 18)[0], 1f / 15f)
+    val animationSet = AnimationSet()
     var moving = false
     var direction = Direction.RIGHT
 
     init {
         setTile(row, col)
-        p.z = 5f
+
+        animationSet.addAnimation("idle", Animation(context.assets.getAtlas().findRegion("playeridle").split(16, 18)[0], 1f / 2f))
+        animationSet.addAnimation("idler", Animation(context.assets.getAtlas().findRegion("playeridler").split(16, 18)[0], 1f / 2f))
+        animationSet.addAnimation("jump", Animation(context.assets.getAtlas().findRegion("playerjump").split(13, 18)[0], -1f))
+        animationSet.addAnimation("jumpr", Animation(context.assets.getAtlas().findRegion("playerjumpr").split(13, 18)[0], -1f))
+        animationSet.addAnimation("crouch", Animation(context.assets.getAtlas().findRegion("playercrouch").split(16, 18)[0], 1f / 10f))
+        animationSet.addAnimation("crouchr", Animation(context.assets.getAtlas().findRegion("playercrouchr").split(16, 18)[0], 1f / 10f))
+
+        animationSet.setAnimation("idle")
     }
 
     fun setTile(row: Int, col: Int) {
@@ -79,27 +85,42 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
                 p.y = pdest.y
             }
         }
+
         if (p.x == pdest.x && p.y == pdest.y) {
             if (moving) {
                 tileMap.getTile(row, col).toggleActive()
             }
             moving = false
         }
-        p.z = 5 + (jumpHeight * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
-        animation.update(dt)
+        p.z = 7f + (jumpHeight * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
+
+        if (p.x == pdest.x && p.y == pdest.y) {
+            if ((animationSet.currentAnimationKey.equals("jump") || animationSet.currentAnimationKey.equals("jumpr"))) {
+                animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "crouch" else "crouchr")
+            } else if (animationSet.currentAnimation!!.hasPlayedOnce()) {
+                animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "idle" else "idler")
+            }
+        } else {
+            if ((animationSet.currentAnimationKey.equals("idle") || animationSet.currentAnimationKey.equals("idler"))) {
+                animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "crouch" else "crouchr")
+            } else if (animationSet.currentAnimation!!.hasPlayedOnce()){
+                animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "jump" else "jumpr")
+            }
+        }
+        animationSet.update(dt)
     }
 
     override fun render(sb: SpriteBatch) {
         tileMap.toIsometric(p.x, p.y, pp)
         if (direction == Direction.RIGHT || direction == Direction.UP) {
-            sb.draw(animation.getImage(), pp.x - animation.getImage().regionWidth / 2, pp.y - animation.getImage().regionHeight / 2 + p.z)
+            sb.draw(animationSet.getImage(), pp.x - animationSet.getImage()!!.regionWidth / 2, pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z)
         } else {
             sb.draw(
-                    animation.getImage(),
-                    pp.x + animation.getImage().regionWidth / 2,
-                    pp.y - animation.getImage().regionHeight / 2 + p.z,
-                    -animation.getImage().regionWidth * 1f,
-                    animation.getImage().regionHeight * 1f)
+                    animationSet.getImage(),
+                    pp.x + animationSet.getImage()!!.regionWidth / 2,
+                    pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z,
+                    -animationSet.getImage()!!.regionWidth * 1f,
+                    animationSet.getImage()!!.regionHeight * 1f)
         }
     }
 }

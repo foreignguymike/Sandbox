@@ -1,6 +1,6 @@
 
 sandboxpack.png
-size: 128,32
+size: 256,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -11,18 +11,46 @@ dot
   orig: 1, 1
   offset: 0, 0
   index: -1
-player
+playercrouch
   rotate: false
-  xy: 88, 16
-  size: 14, 14
-  orig: 14, 14
+  xy: 140, 12
+  size: 16, 18
+  orig: 16, 18
   offset: 0, 0
   index: -1
-playersprites
+playercrouchr
+  rotate: false
+  xy: 158, 12
+  size: 16, 18
+  orig: 16, 18
+  offset: 0, 0
+  index: -1
+playeridle
+  rotate: false
+  xy: 106, 12
+  size: 32, 18
+  orig: 32, 18
+  offset: 0, 0
+  index: -1
+playeridler
   rotate: false
   xy: 72, 12
-  size: 14, 18
-  orig: 14, 18
+  size: 32, 18
+  orig: 32, 18
+  offset: 0, 0
+  index: -1
+playerjump
+  rotate: false
+  xy: 191, 12
+  size: 13, 18
+  orig: 13, 18
+  offset: 0, 0
+  index: -1
+playerjumpr
+  rotate: false
+  xy: 176, 12
+  size: 13, 18
+  orig: 13, 18
   offset: 0, 0
   index: -1
 tile
