@@ -10,6 +10,12 @@ class TileMapData {
                         1, 0, 0, 1,
                         1, 0, 0, 1,
                         1, 1, 1, 1
+                )),
+                TileMapDataModel(4, 4, intArrayOf(
+                        1, 1, 1, 1,
+                        1, 1, 0, 1,
+                        1, 0, 1, 1,
+                        1, 1, 1, 1
                 ))
         )
     }

@@ -13,42 +13,42 @@ dot
   index: -1
 playercrouch
   rotate: false
-  xy: 140, 12
+  xy: 140, 9
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
   index: -1
 playercrouchr
   rotate: false
-  xy: 158, 12
+  xy: 158, 9
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
   index: -1
 playeridle
   rotate: false
-  xy: 106, 12
+  xy: 106, 9
   size: 32, 18
   orig: 32, 18
   offset: 0, 0
   index: -1
 playeridler
   rotate: false
-  xy: 72, 12
+  xy: 72, 9
   size: 32, 18
   orig: 32, 18
   offset: 0, 0
   index: -1
 playerjump
   rotate: false
-  xy: 191, 12
+  xy: 191, 9
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
   index: -1
 playerjumpr
   rotate: false
-  xy: 176, 12
+  xy: 176, 9
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
@@ -56,14 +56,14 @@ playerjumpr
 tile
   rotate: false
   xy: 2, 5
-  size: 33, 25
-  orig: 33, 25
+  size: 33, 22
+  orig: 33, 22
   offset: 0, 0
   index: -1
 tilea
   rotate: false
   xy: 37, 5
-  size: 33, 25
-  orig: 33, 25
+  size: 33, 22
+  orig: 33, 22
   offset: 0, 0
   index: -1

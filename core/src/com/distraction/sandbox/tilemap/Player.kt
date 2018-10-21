@@ -3,9 +3,13 @@ package com.distraction.sandbox.tilemap
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
-import com.distraction.sandbox.*
+import com.distraction.sandbox.Animation
+import com.distraction.sandbox.AnimationSet
+import com.distraction.sandbox.Context
+import com.distraction.sandbox.getAtlas
+import com.distraction.sandbox.states.MoveListener
 
-class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) {
+class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener) : TileObject(context, tileMap) {
 
     enum class Direction {
         UP,
@@ -39,6 +43,7 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
         this.row = row
         this.col = col
         tileMap.toPosition(row, col, p)
+        tileMap.getTile(row, col).toggleActive()
     }
 
     fun moveTile(rowdx: Int, coldx: Int) {
@@ -89,10 +94,11 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
         if (p.x == pdest.x && p.y == pdest.y) {
             if (moving) {
                 tileMap.getTile(row, col).toggleActive()
+                moveListener.onMoved()
             }
             moving = false
         }
-        p.z = 7f + (jumpHeight * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
+        p.z = 4f + (jumpHeight * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
 
         if (p.x == pdest.x && p.y == pdest.y) {
             if ((animationSet.currentAnimationKey.equals("jump") || animationSet.currentAnimationKey.equals("jumpr"))) {
@@ -103,7 +109,7 @@ class Player(context: Context, tileMap: TileMap) : TileObject(context, tileMap) 
         } else {
             if ((animationSet.currentAnimationKey.equals("idle") || animationSet.currentAnimationKey.equals("idler"))) {
                 animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "crouch" else "crouchr")
-            } else if (animationSet.currentAnimation!!.hasPlayedOnce()){
+            } else if (animationSet.currentAnimation!!.hasPlayedOnce()) {
                 animationSet.setAnimation(if (direction == Direction.RIGHT || direction == Direction.DOWN) "jump" else "jumpr")
             }
         }

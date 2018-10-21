@@ -17,7 +17,8 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
 
     companion object {
         const val TILE_WIDTH = 32f
-        const val TILE_HEIGHT = 8f
+        const val TILE_IWIDTH = 16f
+        const val TILE_IHEIGHT = 8f
     }
 
     val p = Vector3()
@@ -31,7 +32,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
                 val tile = getTile(row, col)
                 if (tile.value == 1) {
                     toIsometric(col * TileMap.TILE_WIDTH, row * TileMap.TILE_WIDTH, p)
-                    sb.draw(tile.getImage(), p.x - TILE_WIDTH / 2, p.y - TILE_HEIGHT * 2)
+                    sb.draw(tile.getImage(), p.x - TILE_WIDTH / 2, p.y - TILE_IHEIGHT * 2)
                 }
             }
         }
@@ -45,8 +46,8 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
     fun toIsometric(x: Float, y: Float, p: Vector3) {
         val xo = x / TileMap.TILE_WIDTH
         val yo = y / TileMap.TILE_WIDTH
-        p.x = (xo - yo) * TileMap.TILE_WIDTH / 2
-        p.y = (-xo - yo) * TileMap.TILE_HEIGHT
+        p.x = (xo - yo) * TileMap.TILE_IWIDTH
+        p.y = (-xo - yo) * TileMap.TILE_IHEIGHT
     }
 
     fun isValidTile(row: Int, col: Int): Boolean {
@@ -55,5 +56,17 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
     }
 
     fun getTile(row: Int, col: Int) = grid[row * levelData.numCols + col]
+
+    fun isFinished(): Boolean {
+        for (row in 0 until levelData.numRows) {
+            for (col in 0 until levelData.numCols) {
+                val tile = getTile(row, col)
+                if (tile.value == 1 && !tile.active) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
 
 }

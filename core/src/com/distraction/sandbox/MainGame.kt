@@ -19,14 +19,14 @@ class MainGame : ApplicationAdapter() {
 
     override fun create() {
         val assets = AssetManager()
-        val context = Context().apply {
-            this.assets = assets
-        }
+        gsm = GSM()
+        val context = Context()
+        context.assets = assets
+        context.gsm = gsm
         assets.load("sandboxpack.atlas", TextureAtlas::class.java)
         assets.finishLoading()
 
         sb = SpriteBatch()
-        gsm = GSM()
         gsm.push(PlayState(context, 1))
     }
 
