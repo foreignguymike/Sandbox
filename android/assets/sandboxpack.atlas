@@ -1,0 +1,41 @@
+
+sandboxpack.png
+size: 128,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+dot
+  rotate: false
+  xy: 2, 2
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 88, 16
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+playersprites
+  rotate: false
+  xy: 72, 12
+  size: 14, 18
+  orig: 14, 18
+  offset: 0, 0
+  index: -1
+tile
+  rotate: false
+  xy: 2, 5
+  size: 33, 25
+  orig: 33, 25
+  offset: 0, 0
+  index: -1
+tilea
+  rotate: false
+  xy: 37, 5
+  size: 33, 25
+  orig: 33, 25
+  offset: 0, 0
+  index: -1

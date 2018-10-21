@@ -16,7 +16,7 @@ class GSM {
     }
 
     fun replace(state: GameState) : GameState {
-        var s = states.pop();
+        var s = states.pop()
         states.push(state)
         return s
     }

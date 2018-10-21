@@ -2,8 +2,9 @@ package com.distraction.sandbox.states
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.distraction.sandbox.Context
 
-abstract class GameState {
+abstract class GameState(protected val context: Context) {
     protected val camera = OrthographicCamera()
 
     init {
