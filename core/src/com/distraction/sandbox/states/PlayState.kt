@@ -30,8 +30,6 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     init {
         camera.position.set(0f, 000f, 0f)
         camera.update()
-
-        tileMap.otherObjects.add(TileLight(context, tileMap, 0, 0))
     }
 
     override fun onMoved() {
@@ -50,6 +48,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
             Gdx.input.isKeyPressed(Input.Keys.LEFT) -> player.moveTile(0, -1)
             Gdx.input.isKeyPressed(Input.Keys.UP) -> player.moveTile(-1, 0)
             Gdx.input.isKeyPressed(Input.Keys.DOWN) -> player.moveTile(1, 0)
+            Gdx.input.isKeyJustPressed(Input.Keys.R) -> onIllegal()
         }
 
         player.update(dt)

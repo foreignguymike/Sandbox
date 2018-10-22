@@ -2,10 +2,7 @@ package com.distraction.sandbox.tilemap.tileobjects
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
-import com.distraction.sandbox.Animation
-import com.distraction.sandbox.AnimationSet
-import com.distraction.sandbox.Context
-import com.distraction.sandbox.getAtlas
+import com.distraction.sandbox.*
 import com.distraction.sandbox.states.MoveListener
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileObject
@@ -31,8 +28,9 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
     var direction = RIGHT
 
     init {
-        setTile(row, col)
+        setTile(tileMap.levelData.startRow, tileMap.levelData.startCol)
         p.z = 4f
+        pdest.set(p)
 
         animationSet.addAnimation("idle", Animation(context.assets.getAtlas().findRegion("playeridle").split(16, 18)[0], 1f / 2f))
         animationSet.addAnimation("idler", Animation(context.assets.getAtlas().findRegion("playeridler").split(16, 18)[0], 1f / 2f))
