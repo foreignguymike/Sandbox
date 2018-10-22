@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.distraction.sandbox.Background
 import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
-import com.distraction.sandbox.tilemap.Player
-import com.distraction.sandbox.tilemap.TileLight
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapData
+import com.distraction.sandbox.tilemap.tileobjects.Player
+import com.distraction.sandbox.tilemap.tileobjects.TileLight
 
 interface MoveListener {
     fun onMoved()
+    fun onIllegal()
 }
 
 class PlayState(context: Context, private val level: Int) : GameState(context), MoveListener {
@@ -36,6 +37,10 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         if (tileMap.isFinished()) {
             context.gsm.replace(PlayState(context, level + 1))
         }
+    }
+
+    override fun onIllegal() {
+        context.gsm.replace(PlayState(context, level))
     }
 
     override fun update(dt: Float) {

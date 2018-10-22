@@ -6,6 +6,7 @@ import java.util.*
 class GSM {
 
     private var states = Stack<GameState>()
+    var depth = 1
 
     fun push(state: GameState) {
         states.push(state)
@@ -16,17 +17,21 @@ class GSM {
     }
 
     fun replace(state: GameState) : GameState {
-        var s = states.pop()
+        val s = states.pop()
         states.push(state)
         return s
     }
 
     fun update(dt: Float) {
-        states.peek().update(dt)
+        for (i in depth - 1..0) {
+            states[i].update(dt)
+        }
     }
 
     fun render(sb: SpriteBatch) {
-        states.peek().render(sb)
+        for (i in depth - 1..0) {
+            states[i].render(sb)
+        }
     }
 
 }

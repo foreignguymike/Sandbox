@@ -1,11 +1,15 @@
-package com.distraction.sandbox.tilemap
+package com.distraction.sandbox.tilemap.tileobjects
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector3
-import com.distraction.sandbox.*
+import com.distraction.sandbox.Animation
+import com.distraction.sandbox.AnimationSet
+import com.distraction.sandbox.Context
+import com.distraction.sandbox.getAtlas
 import com.distraction.sandbox.states.MoveListener
-import com.distraction.sandbox.tilemap.Player.Direction.*
+import com.distraction.sandbox.tilemap.TileMap
+import com.distraction.sandbox.tilemap.TileObject
+import com.distraction.sandbox.tilemap.tileobjects.Player.Direction.*
 
 class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener) : TileObject(context, tileMap) {
 
@@ -16,13 +20,14 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
         DOWN
     }
 
-    var pdest = Vector3(p.x, p.y, p.z)
+    private val animationSet = AnimationSet()
+
     var totalDist = 0f
     var speed = 32f * 2
     var jumpHeight = 20f
-    val animationSet = AnimationSet()
     var moving = false
     var sliding = false
+    var superjump = false
     var direction = RIGHT
 
     init {
@@ -45,7 +50,7 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
 
     fun moveTile(rowdx: Int, coldx: Int) {
         if (moving) return
-        if (!tileMap.isValidTile(row + rowdx, col + coldx)) return
+        if (!superjump && !tileMap.isValidTile(row + rowdx, col + coldx)) return
         when {
             coldx > 0 -> direction = RIGHT
             coldx < 0 -> direction = LEFT
@@ -62,59 +67,56 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
     fun getRemainingDistance() = (pdest.x - p.x) + (pdest.y - p.y)
 
     override fun update(dt: Float) {
-        val dist = speed * dt * if (sliding) 4 else 1
-        if (p.x < pdest.x) {
-            p.x += dist
-            if (p.x > pdest.x) {
-                p.x = pdest.x
-            }
-        }
-        if (p.x > pdest.x) {
-            p.x -= dist
-            if (p.x < pdest.x) {
-                p.x = pdest.x
-            }
-        }
-        if (p.y < pdest.y) {
-            p.y += dist
-            if (p.y > pdest.y) {
-                p.y = pdest.y
-            }
-        }
-        if (p.y > pdest.y) {
-            p.y -= dist
-            if (p.y < pdest.y) {
-                p.y = pdest.y
-            }
-        }
+        moveToDest(speed * dt * if (sliding) 4 else 1)
 
         if (p.x == pdest.x && p.y == pdest.y) {
+            if (!tileMap.contains(row, col)) {
+                moveListener.onIllegal()
+                return
+            }
             val tile = tileMap.getTile(row, col)
             if (moving) {
                 tile.toggleActive()
                 moveListener.onMoved()
                 sliding = false
+                superjump = false
                 if (tile.active) {
                     tileMap.otherObjects.add(TileLight(context, tileMap, row, col))
                 }
             }
             moving = false
             tile.objects.forEach {
-                if (it is Arrow) {
-                    sliding = true
-                    when (it.direction) {
-                        UP -> moveTile(-1, 0)
-                        RIGHT -> moveTile(0, 1)
-                        LEFT -> moveTile(0, -1)
-                        DOWN -> moveTile(1, 0)
+                when {
+                    it is Arrow -> {
+                        sliding = true
+                        direction = it.direction
+                    }
+                    it is SuperJump -> {
+                        superjump = true
                     }
                 }
+            }
+            if (sliding || superjump) {
+                val dist2 = if (superjump) 2 else 1
+                var r = 0
+                var c = 0
+                when (direction) {
+                    UP -> r = -dist2
+                    LEFT -> c = -dist2
+                    RIGHT -> c = dist2
+                    DOWN -> r = dist2
+                }
+                moving = false
+                if (superjump) {
+                    sliding = false
+                }
+                moveTile(r, c)
             }
         }
         if (sliding) {
             p.z = 4f
         } else {
-            p.z = 4f + (jumpHeight * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
+            p.z = 4f + (jumpHeight * (if (superjump) 2 else 1) * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
         }
 
         if (sliding) {
@@ -128,7 +130,7 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
         } else {
             if ((animationSet.currentAnimationKey.equals("idle") || animationSet.currentAnimationKey.equals("idler"))) {
                 animationSet.setAnimation(if (direction == RIGHT || direction == DOWN) "crouch" else "crouchr")
-            } else if (animationSet.currentAnimation!!.hasPlayedOnce()) {
+            } else {
                 animationSet.setAnimation(if (direction == RIGHT || direction == DOWN) "jump" else "jumpr")
             }
         }

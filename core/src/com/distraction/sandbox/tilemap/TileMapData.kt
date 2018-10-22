@@ -7,7 +7,8 @@ enum class TileObjectType {
     ARROW_RIGHT,
     ARROW_LEFT,
     ARROW_DOWN,
-    ARROW_UP
+    ARROW_UP,
+    SUPER_JUMP
 }
 
 class TileMapData {
@@ -18,7 +19,9 @@ class TileMapData {
                         1, 0, 0, 1,
                         1, 0, 0, 1,
                         1, 1, 1, 1
-                )),
+                ), arrayOf(
+                        arrowDown(0, 1),
+                        superJump(0, 1))),
                 TileMapDataModel(3, 5, intArrayOf(
                         1, 1, 1, 1, 1,
                         1, 1, 0, 1, 1,
@@ -32,6 +35,7 @@ class TileMapData {
         private fun arrowLeft(row: Int, col: Int) = TileObjectDataModel(TileObjectType.ARROW_LEFT, row, col)
         private fun arrowDown(row: Int, col: Int) = TileObjectDataModel(TileObjectType.ARROW_DOWN, row, col)
         private fun arrowRight(row: Int, col: Int) = TileObjectDataModel(TileObjectType.ARROW_RIGHT, row, col)
+        private fun superJump(row: Int, col: Int) = TileObjectDataModel(TileObjectType.SUPER_JUMP, row, col)
 
     }
 }

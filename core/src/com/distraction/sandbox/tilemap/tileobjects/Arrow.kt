@@ -1,10 +1,12 @@
-package com.distraction.sandbox.tilemap
+package com.distraction.sandbox.tilemap.tileobjects
 
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.distraction.sandbox.Context
 import com.distraction.sandbox.getAtlas
-import com.distraction.sandbox.tilemap.Player.Direction.*
+import com.distraction.sandbox.tilemap.TileMap
+import com.distraction.sandbox.tilemap.TileObject
+import com.distraction.sandbox.tilemap.tileobjects.Player.Direction.*
 
 class Arrow(context: Context, tileMap: TileMap, row: Int, col: Int, val direction: Player.Direction) : TileObject(context, tileMap) {
     private val image = context.assets.getAtlas().findRegion("arrow")
