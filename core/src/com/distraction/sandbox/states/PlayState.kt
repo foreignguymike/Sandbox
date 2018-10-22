@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.distraction.sandbox.Background
 import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
+import com.distraction.sandbox.log
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapData
 import com.distraction.sandbox.tilemap.tileobjects.Player
@@ -35,12 +36,12 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
 
     override fun onMoved() {
         if (tileMap.isFinished()) {
-            context.gsm.replace(PlayState(context, level + 1))
+            context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
         }
     }
 
     override fun onIllegal() {
-        context.gsm.replace(PlayState(context, level))
+        context.gsm.push(TransitionState(context, PlayState(context, level)))
     }
 
     override fun update(dt: Float) {

@@ -32,6 +32,7 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
 
     init {
         setTile(row, col)
+        p.z = 4f
 
         animationSet.addAnimation("idle", Animation(context.assets.getAtlas().findRegion("playeridle").split(16, 18)[0], 1f / 2f))
         animationSet.addAnimation("idler", Animation(context.assets.getAtlas().findRegion("playeridler").split(16, 18)[0], 1f / 2f))

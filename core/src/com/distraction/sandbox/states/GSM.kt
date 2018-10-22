@@ -1,12 +1,14 @@
 package com.distraction.sandbox.states
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.distraction.sandbox.log
 import java.util.*
 
 class GSM {
 
     private var states = Stack<GameState>()
-    var depth = 1
+    var udepth = 1
+    var rdepth = 1
 
     fun push(state: GameState) {
         states.push(state)
@@ -23,13 +25,13 @@ class GSM {
     }
 
     fun update(dt: Float) {
-        for (i in depth - 1..0) {
+        for (i in states.size - 1..states.size - udepth) {
             states[i].update(dt)
         }
     }
 
     fun render(sb: SpriteBatch) {
-        for (i in depth - 1..0) {
+        for (i in 0 until rdepth) {
             states[i].render(sb)
         }
     }
