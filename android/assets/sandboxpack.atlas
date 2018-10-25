@@ -20,14 +20,14 @@ dot
   index: -1
 playercrouch
   rotate: false
-  xy: 101, 43
+  xy: 101, 23
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
   index: -1
 playercrouchr
   rotate: false
-  xy: 101, 23
+  xy: 70, 2
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
@@ -48,14 +48,14 @@ playeridler
   index: -1
 playerjump
   rotate: false
-  xy: 85, 2
+  xy: 103, 3
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
   index: -1
 playerjumpr
   rotate: false
-  xy: 70, 2
+  xy: 88, 2
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
@@ -65,6 +65,13 @@ superjump
   xy: 70, 22
   size: 29, 15
   orig: 29, 15
+  offset: 0, 0
+  index: -1
+teleport
+  rotate: false
+  xy: 101, 43
+  size: 17, 18
+  orig: 17, 18
   offset: 0, 0
   index: -1
 tile

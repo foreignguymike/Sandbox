@@ -9,6 +9,7 @@ abstract class GameState(protected val context: Context) {
     protected val camera = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }
+    protected var ignoreKeys = false
 
     abstract fun update(dt: Float)
     abstract fun render(sb: SpriteBatch)

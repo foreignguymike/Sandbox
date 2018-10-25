@@ -8,7 +8,7 @@ import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileObject
 import com.distraction.sandbox.tilemap.tileobjects.Player.Direction.*
 
-class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener) : TileObject(context, tileMap) {
+class Player(context: Context, tileMap: TileMap, private val moveListener: MoveListener) : TileObject(context, tileMap) {
 
     enum class Direction {
         UP,
@@ -19,13 +19,15 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
 
     private val animationSet = AnimationSet()
 
-    var totalDist = 0f
-    var speed = 32f * 2
-    var jumpHeight = 20f
-    var moving = false
-    var sliding = false
-    var superjump = false
-    var direction = RIGHT
+    private val speed = 32f * 2
+    private val jumpHeight = 20f
+    private var totalDist = 0f
+    private var moving = false
+    private var sliding = false
+    private var superjump = false
+    private var teleport = false
+    private var justTeleported = false
+    private var direction = RIGHT
 
     init {
         setTile(tileMap.levelData.startRow, tileMap.levelData.startCol)
@@ -61,12 +63,19 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
         tileMap.toPosition(row, col, pdest)
         totalDist = getRemainingDistance()
         moving = true
+        justTeleported = false
     }
 
     fun getRemainingDistance() = (pdest.x - p.x) + (pdest.y - p.y)
 
+    fun addTileLight() {
+        if (tileMap.getTile(row, col).active) {
+            tileMap.otherObjects.add(TileLight(context, tileMap, row, col))
+        }
+    }
+
     override fun update(dt: Float) {
-        moveToDest(speed * dt * if (sliding) 4 else 1)
+        moveToDest(speed * dt * if (sliding) 4 else if (teleport && justTeleported) 100 else 1)
 
         if (p.x == pdest.x && p.y == pdest.y) {
             if (!tileMap.contains(row, col)) {
@@ -79,9 +88,8 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
                 moveListener.onMoved()
                 sliding = false
                 superjump = false
-                if (tile.active) {
-                    tileMap.otherObjects.add(TileLight(context, tileMap, row, col))
-                }
+                teleport = false
+                addTileLight()
             }
             moving = false
             tile.objects.forEach {
@@ -92,6 +100,21 @@ class Player(context: Context, tileMap: TileMap, val moveListener: MoveListener)
                     }
                     it is SuperJump -> {
                         superjump = true
+                    }
+                    it is Teleport && !justTeleported -> {
+                        if (it.row == row && it.col == col) {
+                            setTile(it.row2, it.col2)
+                            tileMap.toPosition(it.row2, it.col2, pdest)
+                            addTileLight()
+                            moveListener.onMoved()
+                        } else {
+                            setTile(it.row, it.col)
+                            tileMap.toPosition(it.row, it.col, pdest)
+                            addTileLight()
+                            moveListener.onMoved()
+                        }
+                        teleport = true
+                        justTeleported = true
                     }
                 }
             }

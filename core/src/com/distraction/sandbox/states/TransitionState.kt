@@ -15,6 +15,7 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
 
     init {
         context.gsm.rdepth = 2
+        context.gsm.udepth = 2
     }
 
     override fun update(dt: Float) {
@@ -27,6 +28,7 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
         }
         if (time > duration) {
             context.gsm.rdepth = 1
+            context.gsm.udepth = 1
             context.gsm.pop()
         }
     }

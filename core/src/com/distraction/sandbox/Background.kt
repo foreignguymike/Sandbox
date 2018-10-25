@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 class Background(val context: Context) {
 
     private val dot = context.assets.getAtlas().findRegion("dot")
-    private val color = Color.valueOf("95DB9D")
+//    private val color = Color.valueOf("95DB9D")
+    private val color = Color.valueOf("07100a")
 
     fun update(dt: Float) {
 

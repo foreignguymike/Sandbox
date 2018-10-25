@@ -43,12 +43,14 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     override fun update(dt: Float) {
-        when {
-            Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> player.moveTile(0, 1)
-            Gdx.input.isKeyPressed(Input.Keys.LEFT) -> player.moveTile(0, -1)
-            Gdx.input.isKeyPressed(Input.Keys.UP) -> player.moveTile(-1, 0)
-            Gdx.input.isKeyPressed(Input.Keys.DOWN) -> player.moveTile(1, 0)
-            Gdx.input.isKeyJustPressed(Input.Keys.R) -> onIllegal()
+        if (!ignoreKeys) {
+            when {
+                Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> player.moveTile(0, 1)
+                Gdx.input.isKeyPressed(Input.Keys.LEFT) -> player.moveTile(0, -1)
+                Gdx.input.isKeyPressed(Input.Keys.UP) -> player.moveTile(-1, 0)
+                Gdx.input.isKeyPressed(Input.Keys.DOWN) -> player.moveTile(1, 0)
+                Gdx.input.isKeyJustPressed(Input.Keys.R) -> onIllegal()
+            }
         }
 
         player.update(dt)

@@ -6,8 +6,9 @@ import com.distraction.sandbox.Context
 import com.distraction.sandbox.getAtlas
 import com.distraction.sandbox.tilemap.TileObjectType.*
 import com.distraction.sandbox.tilemap.tileobjects.Arrow
-import com.distraction.sandbox.tilemap.tileobjects.SuperJump
 import com.distraction.sandbox.tilemap.tileobjects.Player
+import com.distraction.sandbox.tilemap.tileobjects.SuperJump
+import com.distraction.sandbox.tilemap.tileobjects.Teleport
 
 class Tile(val context: Context, val value: Int, var active: Boolean = false) {
     val objects = arrayListOf<TileObject>()
@@ -41,6 +42,14 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
                 ARROW_DOWN -> tile.objects.add(Arrow(context, this, it.row, it.col, Player.Direction.DOWN))
                 ARROW_UP -> tile.objects.add(Arrow(context, this, it.row, it.col, Player.Direction.UP))
                 SUPER_JUMP -> tile.objects.add(SuperJump(context, this, it.row, it.col))
+                TELEPORT -> {
+                    if (it is TeleportDataModel) {
+                        val teleport = Teleport(context, this, it.row, it.col, it.row2, it.col2)
+                        tile.objects.add(teleport)
+                        val tile2 = getTile(teleport.row2, teleport.col2)
+                        tile2.objects.add(teleport)
+                    }
+                }
             }
 
         }
