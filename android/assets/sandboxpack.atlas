@@ -6,91 +6,98 @@ filter: Nearest,Nearest
 repeat: none
 arrow
   rotate: false
-  xy: 2, 3
+  xy: 13, 4
   size: 11, 7
   orig: 11, 7
   offset: 0, 0
   index: -1
+bgs
+  rotate: false
+  xy: 2, 2
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
 dot
   rotate: false
-  xy: 31, 36
+  xy: 31, 37
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 playercrouch
   rotate: false
-  xy: 101, 23
+  xy: 101, 24
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
   index: -1
 playercrouchr
   rotate: false
-  xy: 70, 2
+  xy: 70, 3
   size: 16, 18
   orig: 16, 18
   offset: 0, 0
   index: -1
 playeridle
   rotate: false
-  xy: 36, 19
+  xy: 36, 20
   size: 32, 18
   orig: 32, 18
   offset: 0, 0
   index: -1
 playeridler
   rotate: false
-  xy: 2, 12
+  xy: 2, 13
   size: 32, 18
   orig: 32, 18
   offset: 0, 0
   index: -1
 playerjump
   rotate: false
-  xy: 103, 3
+  xy: 103, 4
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
   index: -1
 playerjumpr
   rotate: false
-  xy: 88, 2
+  xy: 88, 3
   size: 13, 18
   orig: 13, 18
   offset: 0, 0
   index: -1
 superjump
   rotate: false
-  xy: 70, 22
+  xy: 70, 23
   size: 29, 15
   orig: 29, 15
   offset: 0, 0
   index: -1
 teleport
   rotate: false
-  xy: 101, 43
+  xy: 101, 44
   size: 17, 18
   orig: 17, 18
   offset: 0, 0
   index: -1
 tile
   rotate: false
-  xy: 31, 39
+  xy: 31, 40
   size: 33, 22
   orig: 33, 22
   offset: 0, 0
   index: -1
 tilea
   rotate: false
-  xy: 66, 39
+  xy: 66, 40
   size: 33, 22
   orig: 33, 22
   offset: 0, 0
   index: -1
 tilelight
   rotate: false
-  xy: 2, 32
+  xy: 2, 33
   size: 27, 29
   orig: 27, 29
   offset: 0, 0

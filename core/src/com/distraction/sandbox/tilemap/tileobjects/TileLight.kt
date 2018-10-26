@@ -9,7 +9,7 @@ import com.distraction.sandbox.tilemap.TileObject
 
 class TileLight(context: Context, tileMap: TileMap, row: Int, col: Int) : TileObject(context, tileMap) {
     private val image = context.assets.getAtlas().findRegion("tilelight")
-    private val color = Color.WHITE
+    private val color = Color(1f, 1f, 1f, 1f)
     private val maxHeight = 32f
     private val speed = 32f * 12f
     private val duration = 0.5f

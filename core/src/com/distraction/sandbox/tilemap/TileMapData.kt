@@ -22,20 +22,30 @@ class TileMapData {
                         1, 0, 0, 1,
                         1, 1, 1, 1
                 )),
+                TileMapDataModel(3, 3, intArrayOf(
+                        1, 1, 1,
+                        1, 1, 1,
+                        0, 1, 0
+                )),
                 TileMapDataModel(3, 5, intArrayOf(
                         1, 1, 1, 1, 1,
-                        1, 1, 0, 1, 1,
+                        1, 0, 0, 0, 1,
                         1, 1, 1, 1, 1
                 ), arrayOf(
-                        superJump(1, 1),
+                        arrowRight(0, 1),
                         arrowRight(0, 2),
-                        arrowLeft(2, 2))),
-                TileMapDataModel(3, 7, intArrayOf(
-                        1, 0, 0, 0, 1, 1, 1,
-                        1, 0, 0, 0, 0, 0, 1,
-                        1, 1, 1, 0, 0, 0, 1
+                        arrowRight(0, 3),
+                        arrowLeft(2, 1),
+                        arrowLeft(2, 2),
+                        arrowLeft(2, 3))),
+                TileMapDataModel(5, 5, intArrayOf(
+                        0, 0, 1, 1, 1,
+                        0, 0, 0, 0, 1,
+                        1, 0, 0, 0, 1,
+                        1, 0, 0, 0, 0,
+                        1, 1, 1, 0, 0
                 ), arrayOf(
-                        teleport(2, 2, 0, 4))),
+                        teleport(4, 2, 0, 2)), 2, 0),
                 TileMapDataModel(4, 4, intArrayOf(
                         1, 1, 1, 1,
                         1, 1, 0, 1,

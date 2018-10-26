@@ -5,10 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector3
-import com.distraction.sandbox.Background
-import com.distraction.sandbox.Constants
-import com.distraction.sandbox.Context
-import com.distraction.sandbox.log
+import com.distraction.sandbox.*
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapData
 import com.distraction.sandbox.tilemap.tileobjects.Player
@@ -74,16 +71,14 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     override fun render(sb: SpriteBatch) {
-        sb.projectionMatrix = bgCam.combined
-        sb.begin()
-        bg.render(sb)
-        sb.end()
+        sb.use {
+            sb.projectionMatrix = bgCam.combined
+            bg.render(sb)
 
-        sb.projectionMatrix = camera.combined
-        sb.begin()
-        tileMap.render(sb)
-        player.render(sb)
-        tileMap.renderOther(sb)
-        sb.end()
+            sb.projectionMatrix = camera.combined
+            tileMap.render(sb)
+            player.render(sb)
+            tileMap.renderOther(sb)
+        }
     }
 }

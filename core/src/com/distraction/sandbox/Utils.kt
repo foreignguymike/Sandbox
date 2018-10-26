@@ -2,6 +2,7 @@ package com.distraction.sandbox
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 
 class Utils {
@@ -15,3 +16,9 @@ class Utils {
 fun AssetManager.getAtlas(str: String = "sandboxpack.atlas") = get(str, TextureAtlas::class.java)
 
 fun log(str: String) = Gdx.app.log("tag", str)
+
+inline fun SpriteBatch.use(action: () -> Unit): Unit {
+    begin()
+    action()
+    end()
+}

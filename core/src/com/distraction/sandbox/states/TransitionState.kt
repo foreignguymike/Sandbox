@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
 import com.distraction.sandbox.getAtlas
+import com.distraction.sandbox.use
 
 class TransitionState(context: Context, val nextState: GameState) : GameState(context) {
 
@@ -39,10 +40,10 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
         val c = sb.color
         sb.color = Color.BLACK
         sb.projectionMatrix = camera.combined
-        sb.begin()
-        sb.draw(dot, 0f, Constants.HEIGHT, 1f * Constants.WIDTH, -perc * Constants.HEIGHT / 2)
-        sb.draw(dot, 0f, 0f, 1f * Constants.WIDTH, perc * Constants.HEIGHT / 2)
-        sb.end()
+        sb.use {
+            sb.draw(dot, 0f, Constants.HEIGHT, 1f * Constants.WIDTH, -perc * Constants.HEIGHT / 2)
+            sb.draw(dot, 0f, 0f, 1f * Constants.WIDTH, perc * Constants.HEIGHT / 2)
+        }
         sb.color = c
     }
 }
