@@ -3,11 +3,15 @@ package com.distraction.sandbox
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.distraction.sandbox.states.GSM
-import com.distraction.sandbox.states.PlayState
+import com.distraction.sandbox.states.TitleState
 
 class MainGame : ApplicationAdapter() {
     private lateinit var sb: SpriteBatch
@@ -19,16 +23,22 @@ class MainGame : ApplicationAdapter() {
         val context = Context()
         context.assets = assets
         context.gsm = gsm
+
+        val resolver = InternalFileHandleResolver()
+        assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(resolver))
+        assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(resolver))
+
         assets.load("sandboxpack.atlas", TextureAtlas::class.java)
+        loadFont(context, "fonts/pixelart.ttf", 6, "MOVES0123456789 ")
+
         assets.finishLoading()
 
         sb = SpriteBatch()
-        gsm.push(PlayState(context, 1))
+        gsm.push(TitleState(context))
     }
 
     override fun render() {
-        Gdx.gl.glClearColor(1f, 1f, 1f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        clearScreen()
 
         gsm.update(Gdx.graphics.deltaTime)
         gsm.render(sb)

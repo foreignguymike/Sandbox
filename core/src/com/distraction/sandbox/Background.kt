@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 
-class Background(val context: Context) {
+class Background(val context: Context, var color: Color = Color.valueOf("95db9d")) {
 
     private val dot = context.assets.getAtlas().findRegion("dot")
-    private val color = Color.valueOf("95DB9D")
     private val image = context.assets.getAtlas().findRegion("bgs")
 
     private val bgs = arrayListOf<Vector3>()

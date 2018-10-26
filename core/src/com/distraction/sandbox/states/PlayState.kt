@@ -3,7 +3,9 @@ package com.distraction.sandbox.states
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.math.Vector3
 import com.distraction.sandbox.*
 import com.distraction.sandbox.tilemap.TileMap
@@ -25,16 +27,24 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }
     private val tp = Vector3()
+    private val font = context.assets.get("fonts/pixelart.ttf", BitmapFont::class.java)
+
+    private var moves = 0
 
     init {
-        camera.position.set(0f, 000f, 0f)
+        camera.position.set(0f, 0f, 0f)
         camera.update()
     }
 
     override fun onMoved() {
+        moves++
         if (tileMap.isFinished()) {
             ignoreKeys = true
-            context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
+            if (level == TileMapData.levelData.size - 1) {
+                context.gsm.push(TransitionState(context, TitleState(context)))
+            } else {
+                context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
+            }
         }
     }
 
@@ -74,6 +84,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         sb.use {
             sb.projectionMatrix = bgCam.combined
             bg.render(sb)
+            font.draw(sb, "MOVES $moves", 10f, 10f)
 
             sb.projectionMatrix = camera.combined
             tileMap.render(sb)

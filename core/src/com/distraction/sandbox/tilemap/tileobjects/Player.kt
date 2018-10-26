@@ -74,13 +74,13 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
 
     fun atDestination() = p.x == pdest.x && p.y == pdest.y
 
-    fun addTileLight() {
+    private fun addTileLight() {
         if (tileMap.getTile(row, col).active) {
             tileMap.otherObjects.add(TileLight(context, tileMap, row, col))
         }
     }
 
-    fun handleJustMoved(tile: Tile) {
+    private fun handleJustMoved(tile: Tile) {
         if (moving) {
             tile.toggleActive()
             moveListener.onMoved()
@@ -94,7 +94,7 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         }
     }
 
-    fun handleTileObjects(tile: Tile) {
+    private fun handleTileObjects(tile: Tile) {
         tile.objects.forEach {
             when {
                 it is Arrow -> {
@@ -136,7 +136,7 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         }
     }
 
-    fun updateBounceHeight() {
+    private fun updateBounceHeight() {
         if (sliding) {
             p.z = 4f
         } else {
@@ -144,7 +144,7 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         }
     }
 
-    fun updateAnimations(dt: Float) {
+    private fun updateAnimations(dt: Float) {
         if (sliding) {
             animationSet.setAnimation(if (direction == RIGHT || direction == DOWN) "crouch" else "crouchr")
         } else if (p.x == pdest.x && p.y == pdest.y) {
