@@ -23,7 +23,7 @@ class MainGame : ApplicationAdapter() {
         assets.finishLoading()
 
         sb = SpriteBatch()
-        gsm.push(PlayState(context, 1))
+        gsm.push(PlayState(context, 3))
     }
 
     override fun render() {

@@ -30,10 +30,12 @@ class TileMapData {
                         superJump(1, 1),
                         arrowRight(0, 2),
                         arrowLeft(2, 2))),
-                TileMapDataModel(1, 8, intArrayOf(
-                        1, 1, 1, 0, 0, 1, 0, 0
+                TileMapDataModel(3, 7, intArrayOf(
+                        1, 0, 0, 0, 1, 1, 1,
+                        1, 0, 0, 0, 0, 0, 1,
+                        1, 1, 1, 0, 0, 0, 1
                 ), arrayOf(
-                        teleport(0, 2, 0, 5))),
+                        teleport(2, 2, 0, 4))),
                 TileMapDataModel(4, 4, intArrayOf(
                         1, 1, 1, 1,
                         1, 1, 0, 1,

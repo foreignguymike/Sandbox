@@ -36,12 +36,16 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
 
     override fun onMoved() {
         if (tileMap.isFinished()) {
+            ignoreKeys = true
             context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
         }
     }
 
     override fun onIllegal() {
-        context.gsm.push(TransitionState(context, PlayState(context, level)))
+        if (!tileMap.isFinished() && !ignoreKeys) {
+            ignoreKeys = true
+            context.gsm.push(TransitionState(context, PlayState(context, level)))
+        }
     }
 
     override fun update(dt: Float) {
