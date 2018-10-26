@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.distraction.sandbox.*
 import com.distraction.sandbox.states.MoveListener
+import com.distraction.sandbox.tilemap.Tile
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileObject
 import com.distraction.sandbox.tilemap.tileobjects.Player.Direction.*
@@ -25,8 +26,9 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
     private var moving = false
     private var sliding = false
     private var superjump = false
-    private var teleport = false
+    var teleporting = false
     private var justTeleported = false
+    private var teleportSpeed = 0f
     private var direction = RIGHT
 
     init {
@@ -52,11 +54,13 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
     fun moveTile(rowdx: Int, coldx: Int) {
         if (moving) return
         if (!superjump && !tileMap.isValidTile(row + rowdx, col + coldx)) return
-        when {
-            coldx > 0 -> direction = RIGHT
-            coldx < 0 -> direction = LEFT
-            rowdx > 0 -> direction = DOWN
-            rowdx < 0 -> direction = UP
+        if (!teleporting) {
+            when {
+                coldx > 0 -> direction = RIGHT
+                coldx < 0 -> direction = LEFT
+                rowdx > 0 -> direction = DOWN
+                rowdx < 0 -> direction = UP
+            }
         }
         row += rowdx
         col += coldx
@@ -66,7 +70,9 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         justTeleported = false
     }
 
-    fun getRemainingDistance() = (pdest.x - p.x) + (pdest.y - p.y)
+    fun getRemainingDistance() = Utils.dist(pdest.x, pdest.y, p.x, p.y)
+
+    fun atDestination() = p.x == pdest.x && p.y == pdest.y
 
     fun addTileLight() {
         if (tileMap.getTile(row, col).active) {
@@ -74,73 +80,71 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         }
     }
 
-    override fun update(dt: Float) {
-        moveToDest(speed * dt * if (sliding) 4 else if (teleport && justTeleported) 100 else 1)
-
-        if (p.x == pdest.x && p.y == pdest.y) {
-            if (!tileMap.contains(row, col)) {
-                moveListener.onIllegal()
-                return
-            }
-            val tile = tileMap.getTile(row, col)
-            if (moving) {
-                tile.toggleActive()
-                moveListener.onMoved()
-                sliding = false
-                superjump = false
-                teleport = false
-                addTileLight()
-            }
+    fun handleJustMoved(tile: Tile) {
+        if (moving) {
+            tile.toggleActive()
+            moveListener.onMoved()
+            sliding = false
+            superjump = false
             moving = false
-            tile.objects.forEach {
-                when {
-                    it is Arrow -> {
-                        sliding = true
-                        direction = it.direction
-                    }
-                    it is SuperJump -> {
-                        superjump = true
-                    }
-                    it is Teleport && !justTeleported -> {
-                        if (it.row == row && it.col == col) {
-                            setTile(it.row2, it.col2)
-                            tileMap.toPosition(it.row2, it.col2, pdest)
-                            addTileLight()
-                            moveListener.onMoved()
-                        } else {
-                            setTile(it.row, it.col)
-                            tileMap.toPosition(it.row, it.col, pdest)
-                            addTileLight()
-                            moveListener.onMoved()
-                        }
-                        teleport = true
-                        justTeleported = true
-                    }
-                }
+            if (atDestination()) {
+                teleporting = false
             }
-            if (sliding || superjump) {
-                val dist2 = if (superjump) 2 else 1
-                var r = 0
-                var c = 0
-                when (direction) {
-                    UP -> r = -dist2
-                    LEFT -> c = -dist2
-                    RIGHT -> c = dist2
-                    DOWN -> r = dist2
+            addTileLight()
+        }
+    }
+
+    fun handleTileObjects(tile: Tile) {
+        tile.objects.forEach {
+            when {
+                it is Arrow -> {
+                    sliding = true
+                    direction = it.direction
                 }
-                moving = false
-                if (superjump) {
-                    sliding = false
+                it is SuperJump -> {
+                    superjump = true
                 }
-                moveTile(r, c)
+                it is Teleport && !justTeleported -> {
+                    teleporting = true
+                    if (it.row == row && it.col == col) {
+                        teleportSpeed = Utils.max(Utils.abs(p.y - tileMap.toPosition(it.row2)), Utils.abs(p.x - tileMap.toPosition(it.col2))) * 1.5f
+                        moveTile(it.row2 - it.row, it.col2 - it.col)
+                    } else {
+                        teleportSpeed = Utils.max(Utils.abs(p.y - tileMap.toPosition(it.row)), Utils.abs(p.x - tileMap.toPosition(it.col))) * 1.5f
+                        moveTile(it.row - it.row2, it.col - it.col2)
+                    }
+                    justTeleported = true
+                }
             }
         }
+
+        if (sliding || superjump) {
+            val dist2 = if (superjump) 2 else 1
+            var r = 0
+            var c = 0
+            when (direction) {
+                UP -> r = -dist2
+                LEFT -> c = -dist2
+                RIGHT -> c = dist2
+                DOWN -> r = dist2
+            }
+            moving = false
+            if (superjump) {
+                sliding = false
+            }
+            moveTile(r, c)
+        }
+    }
+
+    fun updateBounceHeight() {
         if (sliding) {
             p.z = 4f
         } else {
             p.z = 4f + (jumpHeight * (if (superjump) 2 else 1) * MathUtils.sin(3.14f * getRemainingDistance() / totalDist))
         }
+    }
 
+    fun updateAnimations(dt: Float) {
         if (sliding) {
             animationSet.setAnimation(if (direction == RIGHT || direction == DOWN) "crouch" else "crouchr")
         } else if (p.x == pdest.x && p.y == pdest.y) {
@@ -159,17 +163,37 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
         animationSet.update(dt)
     }
 
+    override fun update(dt: Float) {
+        moveToDest((if (teleporting && justTeleported) teleportSpeed else speed) * dt * (if (sliding) 4f else if (superjump) 2f else 1f))
+
+        if (atDestination()) {
+            if (!tileMap.contains(row, col)) {
+                moveListener.onIllegal()
+                return
+            }
+            val tile = tileMap.getTile(row, col)
+
+            handleJustMoved(tile)
+            handleTileObjects(tile)
+        }
+
+        updateBounceHeight()
+        updateAnimations(dt)
+    }
+
     override fun render(sb: SpriteBatch) {
         tileMap.toIsometric(p.x, p.y, pp)
-        if (direction == RIGHT || direction == UP) {
-            sb.draw(animationSet.getImage(), pp.x - animationSet.getImage()!!.regionWidth / 2, pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z)
-        } else {
-            sb.draw(
-                    animationSet.getImage(),
-                    pp.x + animationSet.getImage()!!.regionWidth / 2,
-                    pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z,
-                    -animationSet.getImage()!!.regionWidth * 1f,
-                    animationSet.getImage()!!.regionHeight * 1f)
+        if (!teleporting) {
+            if (direction == RIGHT || direction == UP) {
+                sb.draw(animationSet.getImage(), pp.x - animationSet.getImage()!!.regionWidth / 2, pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z)
+            } else {
+                sb.draw(
+                        animationSet.getImage(),
+                        pp.x + animationSet.getImage()!!.regionWidth / 2,
+                        pp.y - animationSet.getImage()!!.regionHeight / 2 + p.z,
+                        -animationSet.getImage()!!.regionWidth * 1f,
+                        animationSet.getImage()!!.regionHeight * 1f)
+            }
         }
     }
 }

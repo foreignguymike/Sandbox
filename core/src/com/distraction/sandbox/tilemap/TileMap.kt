@@ -98,6 +98,8 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
         p.y = row * TILE_WIDTH
     }
 
+    fun toPosition(tile: Int) = tile * TILE_WIDTH
+
     fun toIsometric(x: Float, y: Float, p: Vector3) {
         val xo = x / TileMap.TILE_WIDTH
         val yo = y / TileMap.TILE_WIDTH

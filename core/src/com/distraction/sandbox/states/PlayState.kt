@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector3
 import com.distraction.sandbox.Background
 import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
@@ -26,6 +27,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     private val bgCam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }
+    private val tp = Vector3()
 
     init {
         camera.position.set(0f, 000f, 0f)
@@ -55,7 +57,12 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
 
         player.update(dt)
 
-        camera.position.set(camera.position.lerp(player.pp, 0.1f))
+        if (player.teleporting) {
+            tileMap.toIsometric(player.pdest.x, player.pdest.y, tp)
+            camera.position.set(camera.position.lerp(tp, 0.1f))
+        } else {
+            camera.position.set(camera.position.lerp(player.pp, 0.1f))
+        }
         camera.update()
 
         bg.update(dt)

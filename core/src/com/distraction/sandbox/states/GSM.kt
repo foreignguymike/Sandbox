@@ -1,7 +1,6 @@
 package com.distraction.sandbox.states
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.distraction.sandbox.log
 import java.util.*
 
 class GSM {
@@ -14,11 +13,11 @@ class GSM {
         states.push(state)
     }
 
-    fun pop() : GameState {
+    fun pop(): GameState {
         return states.pop()
     }
 
-    fun replace(state: GameState) : GameState {
+    fun replace(state: GameState): GameState {
         val s = states.pop()
         states.push(state)
         return s
