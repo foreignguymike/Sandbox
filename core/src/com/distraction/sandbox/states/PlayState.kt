@@ -3,22 +3,20 @@ package com.distraction.sandbox.states
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.distraction.sandbox.*
 import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapData
 import com.distraction.sandbox.tilemap.tileobjects.Player
-import com.distraction.sandbox.tilemap.tileobjects.TileLight
 
 interface MoveListener {
     fun onMoved()
     fun onIllegal()
 }
 
-class PlayState(context: Context, private val level: Int) : GameState(context), MoveListener {
+class PlayState(context: Context, private val level: Int) : GameState(context), MoveListener, ButtonListener {
 
     private val tileMap = TileMap(context, TileMapData.levelData[level - 1])
     private val player = Player(context, tileMap, this)
@@ -27,9 +25,9 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }
     private val tp = Vector3()
-    private val font = context.assets.get("fonts/pixelart.ttf", BitmapFont::class.java)
 
-    private var moves = 0
+    private val hud = HUD(context, this)
+    private val cameraOffset = Vector2(-30f, 0f)
 
     init {
         camera.position.set(0f, 0f, 0f)
@@ -37,7 +35,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     override fun onMoved() {
-        moves++
+        hud.moves++
         if (tileMap.isFinished()) {
             ignoreKeys = true
             if (level == TileMapData.levelData.size - 1) {
@@ -55,8 +53,19 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         }
     }
 
+    override fun onButtonPressed(type: ButtonListener.ButtonType) {
+        when (type) {
+            ButtonListener.ButtonType.UP -> player.moveTile(-1, 0)
+            ButtonListener.ButtonType.LEFT -> player.moveTile(0, -1)
+            ButtonListener.ButtonType.DOWN -> player.moveTile(1, 0)
+            ButtonListener.ButtonType.RIGHT -> player.moveTile(0, 1)
+            ButtonListener.ButtonType.RESTART -> onIllegal()
+        }
+    }
+
     override fun update(dt: Float) {
         if (!ignoreKeys) {
+            hud.update(dt)
             when {
                 Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> player.moveTile(0, 1)
                 Gdx.input.isKeyPressed(Input.Keys.LEFT) -> player.moveTile(0, -1)
@@ -70,9 +79,9 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
 
         if (player.teleporting) {
             tileMap.toIsometric(player.pdest.x, player.pdest.y, tp)
-            camera.position.set(camera.position.lerp(tp, 0.1f))
+            camera.position.set(camera.position.lerp(tp.x + cameraOffset.x, tp.y + cameraOffset.y, 0f, 0.1f))
         } else {
-            camera.position.set(camera.position.lerp(player.pp, 0.1f))
+            camera.position.set(camera.position.lerp(player.pp.x + cameraOffset.x, player.pp.y + cameraOffset.y, 0f, 0.1f))
         }
         camera.update()
 
@@ -84,12 +93,13 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         sb.use {
             sb.projectionMatrix = bgCam.combined
             bg.render(sb)
-            font.draw(sb, "MOVES $moves", 10f, 10f)
 
             sb.projectionMatrix = camera.combined
             tileMap.render(sb)
             player.render(sb)
             tileMap.renderOther(sb)
+
+            hud.render(sb)
         }
     }
 }

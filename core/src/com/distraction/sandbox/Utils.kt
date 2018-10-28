@@ -41,24 +41,3 @@ fun Vector3.lerp(x: Float, y: Float, z: Float, amount: Float): Vector3 {
     this.z += amount * (z - this.z)
     return this
 }
-
-fun loadFont(
-        context: Context,
-        ttf: String,
-        size: Int = 12,
-        chars: String = FreeTypeFontGenerator.DEFAULT_CHARS,
-        color: Color = Color(1f, 1f, 1f, 1f),
-        strokeColor: Color = Color(0f, 0f, 0f, 1f)) {
-    context.assets.load(ttf, BitmapFont::class.java,
-            FreetypeFontLoader.FreeTypeFontLoaderParameter().apply {
-                fontFileName = ttf
-                fontParameters.size = size
-                fontParameters.characters = chars
-                fontParameters.color = color
-                fontParameters.borderColor = strokeColor
-                fontParameters.borderWidth = 1f
-                fontParameters.minFilter = Texture.TextureFilter.Nearest
-                fontParameters.magFilter = Texture.TextureFilter.Nearest
-                fontParameters.borderStraight = true
-            })
-}

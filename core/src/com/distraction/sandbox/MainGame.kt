@@ -29,7 +29,6 @@ class MainGame : ApplicationAdapter() {
         assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(resolver))
 
         assets.load("sandboxpack.atlas", TextureAtlas::class.java)
-        loadFont(context, "fonts/pixelart.ttf", 6, "MOVES0123456789 ")
 
         assets.finishLoading()
 

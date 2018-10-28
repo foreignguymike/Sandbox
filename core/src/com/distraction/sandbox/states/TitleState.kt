@@ -33,6 +33,9 @@ class TitleState(context: Context) : GameState(context), MoveListener {
     }
 
     override fun update(dt: Float) {
+        if (Gdx.input.justTouched()) {
+            context.gsm.push(TransitionState(context, PlayState(context, 1)))
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             context.gsm.push(TransitionState(context, PlayState(context, 1)))
         }

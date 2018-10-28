@@ -6,10 +6,10 @@ import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
 
 abstract class GameState(protected val context: Context) {
+    var ignoreKeys = false
     protected val camera = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }
-    protected var ignoreKeys = false
 
     abstract fun update(dt: Float)
     abstract fun render(sb: SpriteBatch)
