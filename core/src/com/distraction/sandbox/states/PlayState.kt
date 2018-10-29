@@ -51,11 +51,12 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
                 context.scoreHandler.saveScore(level - 1, hud.getMoves())
             }
 
-            if (level == TileMapData.levelData.size) {
-                context.gsm.push(TransitionState(context, TitleState(context)))
-            } else {
-                context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
-            }
+//            if (level == TileMapData.levelData.size) {
+//                context.gsm.push(TransitionState(context, TitleState(context)))
+//            } else {
+//                context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
+//            }
+            context.gsm.push(LevelFinishState(context, level, hud.getMoves(), hud.getBest()))
         }
     }
 

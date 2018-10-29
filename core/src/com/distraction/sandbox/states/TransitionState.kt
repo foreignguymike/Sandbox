@@ -7,7 +7,7 @@ import com.distraction.sandbox.Context
 import com.distraction.sandbox.getAtlas
 import com.distraction.sandbox.use
 
-class TransitionState(context: Context, val nextState: GameState) : GameState(context) {
+class TransitionState(context: Context, val nextState: GameState, val numPop: Int = 1) : GameState(context) {
 
     private val dot = context.assets.getAtlas().findRegion("dot")
     private val duration = 0.5f
@@ -15,8 +15,7 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
     private var next = false
 
     init {
-        context.gsm.rdepth = 2
-        context.gsm.udepth = 2
+        context.gsm.depth++
     }
 
     override fun update(dt: Float) {
@@ -24,13 +23,15 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
         if (!next && time > duration / 2) {
             next = true
             nextState.ignoreInput = true
-            context.gsm.pop()
+            for (i in 0 until numPop) {
+                context.gsm.pop()
+            }
+            context.gsm.depth -= numPop - 1
             context.gsm.replace(nextState)
             context.gsm.push(this)
         }
         if (time > duration) {
-            context.gsm.rdepth = 1
-            context.gsm.udepth = 1
+            context.gsm.depth--
             context.gsm.pop()
             nextState.ignoreInput = false
         }

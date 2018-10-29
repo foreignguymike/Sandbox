@@ -27,7 +27,13 @@ class Button(val image: TextureRegion, x: Float = 0f, y: Float = 0f, val color: 
     val rect: Rectangle = Rectangle(if (centered) (Constants.WIDTH - image.regionWidth) / 2f else x, y, 1f * image.regionWidth, 1f * image.regionHeight)
 }
 
-class NumberLabel(val image: TextureRegion, val pos: Vector2, var num: Int)
+class NumberLabel(context: Context, val image: TextureRegion, val pos: Vector2, var num: Int) {
+    private val numberFont = NumberFont(context)
+    fun render(sb: SpriteBatch) {
+        sb.draw(image, pos.x, pos.y)
+        numberFont.render(sb, pos.x + image.regionWidth + 5, pos.y, num)
+    }
+}
 
 class HUD(context: Context, private val buttonListener: ButtonListener) {
     private val touchPoint = Vector3()
@@ -58,10 +64,16 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
                             5f, 98f))
 
     private val labels = arrayOf(
-            NumberLabel(context.assets.getAtlas().findRegion("best"),
-                    Vector2(Constants.WIDTH - 50f, Constants.HEIGHT - 16f), 0),
-            NumberLabel(context.assets.getAtlas().findRegion("moves"),
-                    Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 25f), 0))
+            NumberLabel(
+                    context,
+                    context.assets.getAtlas().findRegion("best"),
+                    Vector2(Constants.WIDTH - 50f, Constants.HEIGHT - 16f),
+                    0),
+            NumberLabel(
+                    context,
+                    context.assets.getAtlas().findRegion("moves"),
+                    Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 25f),
+                    0))
 
     private val numberFont = NumberFont(context)
 
@@ -108,8 +120,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
             sb.color = c
         }
         labels.forEach {
-            sb.draw(it.image, it.pos.x, it.pos.y)
-            numberFont.render(sb, it.pos.x + it.image.regionWidth + 5, it.pos.y, it.num)
+            it.render(sb)
         }
     }
 }

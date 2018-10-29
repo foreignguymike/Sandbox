@@ -36,6 +36,10 @@ fun SpriteBatch.drawRotated(region: TextureRegion, x: Float, y: Float, rotation:
     draw(region, x, y, region.regionWidth / 2f, region.regionHeight / 2f, 1f * region.regionWidth, 1f * region.regionHeight, 1f, 1f, rotation)
 }
 
+fun SpriteBatch.draw(button: Button) {
+    draw(button.image, button.rect.x, button.rect.y, button.rect.width, button.rect.height)
+}
+
 fun clearScreen(r: Int = 255, g: Int = 255, b: Int = 255, a: Int = 255) {
     Gdx.gl.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)

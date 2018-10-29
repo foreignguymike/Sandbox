@@ -3,14 +3,12 @@ package com.distraction.sandbox.states
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Vector3
 import com.distraction.sandbox.*
 import com.distraction.sandbox.tilemap.TileMapData
 
 class LevelSelectState(context: Context) : GameState(context) {
     private val levelIcon = context.assets.getAtlas().findRegion("levelicon")
     private val colSize = 6
-    private val touchPoint = Vector3()
 
     private val levels = Array(TileMapData.levelData.size) {
         val row = it / colSize
@@ -37,12 +35,12 @@ class LevelSelectState(context: Context) : GameState(context) {
                 camera.unproject(touchPoint)
                 levels.forEachIndexed { i, it ->
                     if (context.scoreHandler.locked(i)) {
-                        return
+                        return@forEachIndexed
                     }
                     if (it.rect.contains(touchPoint) && i < TileMapData.levelData.size) {
                         ignoreInput = true
                         context.gsm.push(TransitionState(context, PlayState(context, i + 1)))
-                        return
+                        return@forEachIndexed
                     }
                 }
                 if (backButton.rect.contains(touchPoint)) {
@@ -53,6 +51,7 @@ class LevelSelectState(context: Context) : GameState(context) {
         }
     }
 
+    val dot = context.assets.getAtlas().findRegion("dot")
     override fun render(sb: SpriteBatch) {
         clearScreen(76, 176, 219)
         sb.use {

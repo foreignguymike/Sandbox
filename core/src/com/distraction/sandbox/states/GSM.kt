@@ -6,8 +6,7 @@ import java.util.*
 class GSM {
 
     private var states = Stack<GameState>()
-    var udepth = 1
-    var rdepth = 1
+    var depth = 1
 
     fun push(state: GameState) {
         states.push(state)
@@ -24,13 +23,13 @@ class GSM {
     }
 
     fun update(dt: Float) {
-        for (i in states.size - udepth until states.size) {
+        for (i in states.size - depth until states.size) {
             states[i].update(dt)
         }
     }
 
     fun render(sb: SpriteBatch) {
-        for (i in states.size - rdepth until states.size) {
+        for (i in states.size - depth until states.size) {
             states[i].render(sb)
         }
     }
