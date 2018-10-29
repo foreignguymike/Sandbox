@@ -1,6 +1,7 @@
 package com.distraction.sandbox
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -22,31 +23,39 @@ interface ButtonListener {
     fun onButtonPressed(type: ButtonType)
 }
 
-class Button(val image: TextureRegion, val rect: Rectangle)
+class Button(val image: TextureRegion, x: Float = 0f, y: Float = 0f, val color: Color = Color(1f, 1f, 1f, 1f), val centered: Boolean = false) {
+    val rect: Rectangle = Rectangle(if (centered) (Constants.WIDTH - image.regionWidth) / 2f else x, y, 1f * image.regionWidth, 1f * image.regionHeight)
+}
+
 class NumberLabel(val image: TextureRegion, val pos: Vector2, var num: Int)
 
 class HUD(context: Context, private val buttonListener: ButtonListener) {
     private val touchPoint = Vector3()
+    private val alpha = 0.5f
 
     private val buttons = hashMapOf(
             LEFT to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(6f, 26f, 17f, 17f)),
+                            6f, 26f,
+                            Color(1f, 1f, 1f, alpha)),
             UP to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(21f, 41f, 17f, 17f)),
+                            21f, 41f,
+                            Color(1f, 1f, 1f, alpha)),
             RIGHT to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(36f, 26f, 17f, 17f)),
+                            36f, 26f,
+                            Color(1f, 1f, 1f, alpha)),
             DOWN to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(21f, 11f, 17f, 17f)),
+                            21f, 11f,
+                            Color(1f, 1f, 1f, alpha)),
             RESTART to
                     Button(context.assets.getAtlas().findRegion("restart"),
-                            Rectangle(5f, 115f, 48f, 17f)),
+                            5f, 115f),
             BACK to
                     Button(context.assets.getAtlas().findRegion("back"),
-                            Rectangle(5f, 98f, 48f, 17f)))
+                            5f, 98f))
 
     private val labels = arrayOf(
             NumberLabel(context.assets.getAtlas().findRegion("best"),
@@ -59,6 +68,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     fun setBest(best: Int) {
         labels[0].num = best
     }
+
     fun getBest() = labels[0].num
     fun incrementMoves() = labels[1].num++
     fun getMoves() = labels[1].num
@@ -76,7 +86,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
             cam.unproject(touchPoint)
 
             buttons.forEach { key, value ->
-                if (value.rect.contains(touchPoint.x, touchPoint.y)) {
+                if (value.rect.contains(touchPoint)) {
                     buttonListener.onButtonPressed(key)
                 }
             }
@@ -87,12 +97,15 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
         sb.projectionMatrix = fontCam.combined
         sb.projectionMatrix = cam.combined
         buttons.forEach { key, value ->
+            val c = sb.color
+            sb.color = value.color
             when (key) {
                 LEFT -> sb.drawRotated(value.image, value.rect.x, value.rect.y, 90f)
                 DOWN -> sb.draw(value.image, value.rect.x, value.rect.y + value.image.regionHeight, 1f * value.image.regionWidth, 1f * -value.image.regionHeight)
                 RIGHT -> sb.drawRotated(value.image, value.rect.x, value.rect.y, -90f)
                 else -> sb.draw(value.image, value.rect.x, value.rect.y)
             }
+            sb.color = c
         }
         labels.forEach {
             sb.draw(it.image, it.pos.x, it.pos.y)

@@ -11,7 +11,7 @@ class ScoreHandler {
     fun init() {
         with(getPreferences()) {
             for (i in 0 until scores.size) {
-                if (getInteger(i.toString()) == 0) {
+                if (!contains(i.toString())) {
                     putInteger(i.toString(), 0)
                 }
             }
@@ -22,7 +22,7 @@ class ScoreHandler {
     fun load() {
         with(getPreferences()) {
             for (i in 0 until scores.size) {
-                if (getString(i.toString()) == null) {
+                if (!contains(i.toString())) {
                     init()
                 }
                 scores[i] = getInteger(i.toString(), 0)

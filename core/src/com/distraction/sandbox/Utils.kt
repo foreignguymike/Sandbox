@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 
 class Utils {
@@ -46,3 +47,5 @@ fun Vector3.lerp(x: Float, y: Float, z: Float, amount: Float): Vector3 {
     this.z += amount * (z - this.z)
     return this
 }
+
+fun Rectangle.contains(v: Vector3) = contains(v.x, v.y)
