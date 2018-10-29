@@ -34,8 +34,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         camera.position.set(-100f, player.pp.y + cameraOffset.y, 0f)
         camera.update()
 
-        hud.setBest(context.scoreHandler.scores[level])
-        log("set best: ${context.scoreHandler.scores[level]}")
+        hud.setBest(context.scoreHandler.scores[level - 1])
     }
 
     override fun onMoved() {
@@ -49,8 +48,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
             ignoreInput = true
 
             if (hud.getBest() == 0 || hud.getMoves() < hud.getBest()) {
-                context.scoreHandler.saveScore(level, hud.getMoves())
-                log("saved best: ${hud.getMoves()}")
+                context.scoreHandler.saveScore(level - 1, hud.getMoves())
             }
 
             if (level == TileMapData.levelData.size) {

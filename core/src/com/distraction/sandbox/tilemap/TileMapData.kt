@@ -53,7 +53,16 @@ class TileMapData {
                         1, 1, 1, 1
                 ), arrayOf(
                         superJump(1, 1),
-                        superJump(2, 2)))
+                        superJump(2, 2))),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1)),
+                TileMapDataModel(1, 3, intArrayOf(1, 1, 1))
         )
 
         private fun arrowUp(row: Int, col: Int) = TileObjectDataModel(TileObjectType.ARROW_UP, row, col)

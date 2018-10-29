@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.distraction.sandbox.tilemap.TileMapData
 
 class ScoreHandler {
-    val scores = Array(TileMapData.levelData.size + 1) { 0 }
+    val scores = IntArray(TileMapData.levelData.size) { 0 }
 
     fun getPreferences() = Gdx.app.getPreferences("scores")
 
@@ -30,11 +30,13 @@ class ScoreHandler {
         }
     }
 
-    fun saveScore(level: Int, score: Int) {
+    fun saveScore(index: Int, score: Int) {
         with(getPreferences()) {
-            putInteger(level.toString(), score)
-            scores[level] = score
+            putInteger(index.toString(), score)
+            scores[index] = score
             flush()
         }
     }
+
+    fun locked(index: Int) = index != 0 && scores[index - 1] == 0
 }
