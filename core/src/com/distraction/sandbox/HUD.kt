@@ -1,13 +1,13 @@
 package com.distraction.sandbox
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.distraction.sandbox.ButtonListener.ButtonType.*
 
 interface ButtonListener {
     enum class ButtonType {
@@ -23,33 +23,42 @@ interface ButtonListener {
 }
 
 class Button(val image: TextureRegion, val rect: Rectangle)
+class NumberLabel(val image: TextureRegion, val pos: Vector2, var num: Int)
 
 class HUD(context: Context, private val buttonListener: ButtonListener) {
     private val touchUnprojected = Vector3()
 
     private val buttons = hashMapOf(
-            ButtonListener.ButtonType.LEFT to
-                    Button(context.assets.getAtlas().findRegion("leftbutton"),
-                            Rectangle(10f, 10f, 25f, 25f)),
-            ButtonListener.ButtonType.UP to
-                    Button(context.assets.getAtlas().findRegion("upbutton"),
-                            Rectangle(36f, 36f, 25f, 25f)),
-            ButtonListener.ButtonType.RIGHT to
-                    Button(context.assets.getAtlas().findRegion("rightbutton"),
-                            Rectangle(62f, 10f, 25f, 25f)),
-            ButtonListener.ButtonType.DOWN to
-                    Button(context.assets.getAtlas().findRegion("downbutton"),
-                            Rectangle(36f, 10f, 25f, 25f)),
-            ButtonListener.ButtonType.RESTART to
+            LEFT to
+                    Button(context.assets.getAtlas().findRegion("arrowbutton"),
+                            Rectangle(6f, 26f, 25f, 25f)),
+            UP to
+                    Button(context.assets.getAtlas().findRegion("arrowbutton"),
+                            Rectangle(21f, 41f, 25f, 25f)),
+            RIGHT to
+                    Button(context.assets.getAtlas().findRegion("arrowbutton"),
+                            Rectangle(36f, 26f, 25f, 25f)),
+            DOWN to
+                    Button(context.assets.getAtlas().findRegion("arrowbutton"),
+                            Rectangle(21f, 11f, 25f, 25f)),
+            RESTART to
                     Button(context.assets.getAtlas().findRegion("restart"),
                             Rectangle(5f, 115f, 48f, 17f)),
-            ButtonListener.ButtonType.BACK to
+            BACK to
                     Button(context.assets.getAtlas().findRegion("back"),
                             Rectangle(5f, 98f, 48f, 17f)))
 
-    private val movesImage = context.assets.getAtlas().findRegion("moves")
-    var moves = 0
+    private val labels = arrayOf(
+            NumberLabel(context.assets.getAtlas().findRegion("best"),
+                    Vector2(Constants.WIDTH - 50f, Constants.HEIGHT - 16f), 0),
+            NumberLabel(context.assets.getAtlas().findRegion("moves"),
+                    Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 25f), 0))
+
     private val numberFont = NumberFont(context)
+
+    fun incrementMoves() {
+        labels[1].num++
+    }
 
     private val cam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
@@ -74,10 +83,17 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     fun render(sb: SpriteBatch) {
         sb.projectionMatrix = fontCam.combined
         sb.projectionMatrix = cam.combined
-        buttons.forEach { _, value ->
-            sb.draw(value.image, value.rect.x, value.rect.y)
+        buttons.forEach { key, value ->
+            when (key) {
+                LEFT -> sb.drawRotated(value.image, value.rect.x, value.rect.y, 90f)
+                DOWN -> sb.draw(value.image, value.rect.x, value.rect.y + value.image.regionHeight, 1f * value.image.regionWidth, 1f * -value.image.regionHeight)
+                RIGHT -> sb.drawRotated(value.image, value.rect.x, value.rect.y, -90f)
+                else -> sb.draw(value.image, value.rect.x, value.rect.y)
+            }
         }
-        sb.draw(movesImage, Constants.WIDTH - movesImage.regionWidth - 25, Constants.HEIGHT - movesImage.regionHeight - 9)
-        numberFont.render(sb, moves, Constants.WIDTH - movesImage.regionWidth + 5, Constants.HEIGHT - movesImage.regionHeight - 9)
+        labels.forEach {
+            sb.draw(it.image, it.pos.x, it.pos.y)
+            numberFont.render(sb, it.num, it.pos.x + it.image.regionWidth + 5, it.pos.y)
+        }
     }
 }

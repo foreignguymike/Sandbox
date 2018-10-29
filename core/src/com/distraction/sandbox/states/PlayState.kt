@@ -28,7 +28,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     private val tp = Vector3()
 
     private val hud = HUD(context, this)
-    private val cameraOffset = Vector2(-30f, 0f)
+    private val cameraOffset = Vector2(-10f, 0f)
 
     init {
         camera.position.set(-100f, player.pp.y + cameraOffset.y, 0f)
@@ -37,7 +37,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
 
     override fun onMoved() {
         if (!tileMap.isFinished()) {
-            hud.moves++
+            hud.incrementMoves()
         }
     }
 

@@ -45,7 +45,7 @@ class TitleState(context: Context) : GameState(context) {
     }
 
     override fun render(sb: SpriteBatch) {
-        clearScreen(149, 219, 157)
+        clearScreen(76, 176, 219)
         sb.use {
             sb.projectionMatrix = hudCam.combined
             sb.draw(title, (Constants.WIDTH - title.regionWidth) / 2f, 60f)

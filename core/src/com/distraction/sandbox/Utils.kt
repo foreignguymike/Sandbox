@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.math.Vector3
@@ -28,6 +29,10 @@ inline fun SpriteBatch.use(action: () -> Unit): Unit {
     begin()
     action()
     end()
+}
+
+fun SpriteBatch.drawRotated(region: TextureRegion, x: Float, y: Float, rotation: Float) {
+    draw(region, x, y, region.regionWidth / 2f, region.regionHeight / 2f, 1f * region.regionWidth, 1f * region.regionHeight, 1f, 1f, rotation)
 }
 
 fun clearScreen(r: Int = 255, g: Int = 255, b: Int = 255, a: Int = 255) {
