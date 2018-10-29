@@ -6,4 +6,5 @@ import com.distraction.sandbox.states.GSM
 class Context {
     lateinit var assets: AssetManager
     lateinit var gsm: GSM
+    lateinit var scoreHandler: ScoreHandler
 }

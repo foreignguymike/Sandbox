@@ -33,6 +33,9 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     init {
         camera.position.set(-100f, player.pp.y + cameraOffset.y, 0f)
         camera.update()
+
+        hud.setBest(context.scoreHandler.scores[level])
+        log("set best: ${context.scoreHandler.scores[level]}")
     }
 
     override fun onMoved() {
@@ -44,6 +47,12 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     override fun onToggled() {
         if (tileMap.isFinished()) {
             ignoreInput = true
+
+            if (hud.getBest() == 0 || hud.getMoves() < hud.getBest()) {
+                context.scoreHandler.saveScore(level, hud.getMoves())
+                log("saved best: ${hud.getMoves()}")
+            }
+
             if (level == TileMapData.levelData.size) {
                 context.gsm.push(TransitionState(context, TitleState(context)))
             } else {

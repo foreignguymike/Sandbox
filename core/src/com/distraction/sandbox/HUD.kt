@@ -31,16 +31,16 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     private val buttons = hashMapOf(
             LEFT to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(6f, 26f, 25f, 25f)),
+                            Rectangle(6f, 26f, 17f, 17f)),
             UP to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(21f, 41f, 25f, 25f)),
+                            Rectangle(21f, 41f, 17f, 17f)),
             RIGHT to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(36f, 26f, 25f, 25f)),
+                            Rectangle(36f, 26f, 17f, 17f)),
             DOWN to
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
-                            Rectangle(21f, 11f, 25f, 25f)),
+                            Rectangle(21f, 11f, 17f, 17f)),
             RESTART to
                     Button(context.assets.getAtlas().findRegion("restart"),
                             Rectangle(5f, 115f, 48f, 17f)),
@@ -56,9 +56,12 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
 
     private val numberFont = NumberFont(context)
 
-    fun incrementMoves() {
-        labels[1].num++
+    fun setBest(best: Int) {
+        labels[0].num = best
     }
+    fun getBest() = labels[0].num
+    fun incrementMoves() = labels[1].num++
+    fun getMoves() = labels[1].num
 
     private val cam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)

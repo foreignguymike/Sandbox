@@ -23,6 +23,7 @@ class MainGame : ApplicationAdapter() {
         val context = Context()
         context.assets = assets
         context.gsm = gsm
+        context.scoreHandler = ScoreHandler().apply { load() }
 
         val resolver = InternalFileHandleResolver()
         assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(resolver))
