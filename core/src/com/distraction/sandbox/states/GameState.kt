@@ -6,7 +6,7 @@ import com.distraction.sandbox.Constants
 import com.distraction.sandbox.Context
 
 abstract class GameState(protected val context: Context) {
-    var ignoreKeys = false
+    var ignoreInput = false
     protected val camera = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
     }

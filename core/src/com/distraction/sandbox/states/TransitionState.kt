@@ -23,7 +23,7 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
         time += dt
         if (!next && time > duration / 2) {
             next = true
-            nextState.ignoreKeys = true
+            nextState.ignoreInput = true
             context.gsm.pop()
             context.gsm.replace(nextState)
             context.gsm.push(this)
@@ -32,7 +32,7 @@ class TransitionState(context: Context, val nextState: GameState) : GameState(co
             context.gsm.rdepth = 1
             context.gsm.udepth = 1
             context.gsm.pop()
-            nextState.ignoreKeys = false
+            nextState.ignoreInput = false
         }
     }
 

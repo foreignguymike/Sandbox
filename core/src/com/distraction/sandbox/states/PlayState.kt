@@ -13,6 +13,7 @@ import com.distraction.sandbox.tilemap.tileobjects.Player
 
 interface MoveListener {
     fun onMoved()
+    fun onToggled()
     fun onIllegal()
 }
 
@@ -30,14 +31,19 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     private val cameraOffset = Vector2(-30f, 0f)
 
     init {
-        camera.position.set(0f, 0f, 0f)
+        camera.position.set(-100f, player.pp.y + cameraOffset.y, 0f)
         camera.update()
     }
 
     override fun onMoved() {
-        hud.moves++
+        if (!tileMap.isFinished()) {
+            hud.moves++
+        }
+    }
+
+    override fun onToggled() {
         if (tileMap.isFinished()) {
-            ignoreKeys = true
+            ignoreInput = true
             if (level == TileMapData.levelData.size - 1) {
                 context.gsm.push(TransitionState(context, TitleState(context)))
             } else {
@@ -47,8 +53,8 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     override fun onIllegal() {
-        if (!tileMap.isFinished() && !ignoreKeys) {
-            ignoreKeys = true
+        if (!tileMap.isFinished() && !ignoreInput) {
+            ignoreInput = true
             context.gsm.push(TransitionState(context, PlayState(context, level)))
         }
     }
@@ -64,7 +70,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     }
 
     override fun update(dt: Float) {
-        if (!ignoreKeys) {
+        if (!ignoreInput) {
             hud.update(dt)
             when {
                 Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> player.moveTile(0, 1)

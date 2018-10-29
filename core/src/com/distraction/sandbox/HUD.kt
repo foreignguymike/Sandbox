@@ -1,8 +1,9 @@
 package com.distraction.sandbox
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
@@ -48,6 +49,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
 
     private val movesImage = context.assets.getAtlas().findRegion("moves")
     var moves = 0
+    private val numberFont = NumberFont(context)
 
     private val cam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
@@ -72,9 +74,10 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     fun render(sb: SpriteBatch) {
         sb.projectionMatrix = fontCam.combined
         sb.projectionMatrix = cam.combined
-        buttons.forEach { key, value ->
+        buttons.forEach { _, value ->
             sb.draw(value.image, value.rect.x, value.rect.y)
         }
         sb.draw(movesImage, Constants.WIDTH - movesImage.regionWidth - 25, Constants.HEIGHT - movesImage.regionHeight - 9)
+        numberFont.render(sb, moves, Constants.WIDTH - movesImage.regionWidth + 5, Constants.HEIGHT - movesImage.regionHeight - 9)
     }
 }

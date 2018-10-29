@@ -9,7 +9,7 @@ import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileObject
 import com.distraction.sandbox.tilemap.tileobjects.Player.Direction.*
 
-class Player(context: Context, tileMap: TileMap, private val moveListener: MoveListener) : TileObject(context, tileMap) {
+class Player(context: Context, tileMap: TileMap, private val moveListener: MoveListener?) : TileObject(context, tileMap) {
 
     enum class Direction {
         UP,
@@ -82,8 +82,11 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
 
     private fun handleJustMoved(tile: Tile) {
         if (moving) {
-            tile.toggleActive()
-            moveListener.onMoved()
+            moveListener?.onMoved()
+            if (!tileMap.isFinished()) {
+                tile.toggleActive()
+                moveListener?.onToggled()
+            }
             sliding = false
             superjump = false
             moving = false
@@ -168,7 +171,7 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
 
         if (atDestination()) {
             if (!tileMap.contains(row, col)) {
-                moveListener.onIllegal()
+                moveListener?.onIllegal()
                 return
             }
             val tile = tileMap.getTile(row, col)

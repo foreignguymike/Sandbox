@@ -9,9 +9,9 @@ import com.distraction.sandbox.tilemap.TileMap
 import com.distraction.sandbox.tilemap.TileMapDataModel
 import com.distraction.sandbox.tilemap.tileobjects.Player
 
-class TitleState(context: Context) : GameState(context), MoveListener {
+class TitleState(context: Context) : GameState(context) {
     private val tileMap = TileMap(context, TileMapDataModel(3, 3, IntArray(9) { 1 }))
-    private val player = Player(context, tileMap, this)
+    private val player = Player(context, tileMap, null)
     private val title = context.assets.getAtlas().findRegion("title")
     private val hudCam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)
@@ -24,20 +24,16 @@ class TitleState(context: Context) : GameState(context), MoveListener {
         camera.update()
     }
 
-    override fun onMoved() {
-
-    }
-
-    override fun onIllegal() {
-
-    }
-
     override fun update(dt: Float) {
-        if (Gdx.input.justTouched()) {
-            context.gsm.push(TransitionState(context, PlayState(context, 1)))
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            context.gsm.push(TransitionState(context, PlayState(context, 1)))
+        if (!ignoreInput) {
+            if (Gdx.input.justTouched()) {
+                ignoreInput = true
+                context.gsm.push(TransitionState(context, PlayState(context, 1)))
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                ignoreInput = true
+                context.gsm.push(TransitionState(context, PlayState(context, 1)))
+            }
         }
 
         player.update(dt)
