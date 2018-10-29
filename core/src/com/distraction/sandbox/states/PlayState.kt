@@ -44,7 +44,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     override fun onToggled() {
         if (tileMap.isFinished()) {
             ignoreInput = true
-            if (level == TileMapData.levelData.size - 1) {
+            if (level == TileMapData.levelData.size) {
                 context.gsm.push(TransitionState(context, TitleState(context)))
             } else {
                 context.gsm.push(TransitionState(context, PlayState(context, level + 1)))
@@ -59,6 +59,13 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         }
     }
 
+    fun back() {
+        if (!ignoreInput) {
+            ignoreInput = true
+            context.gsm.push(TransitionState(context, LevelSelectState(context)))
+        }
+    }
+
     override fun onButtonPressed(type: ButtonListener.ButtonType) {
         when (type) {
             ButtonListener.ButtonType.UP -> player.moveTile(-1, 0)
@@ -66,6 +73,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
             ButtonListener.ButtonType.DOWN -> player.moveTile(1, 0)
             ButtonListener.ButtonType.RIGHT -> player.moveTile(0, 1)
             ButtonListener.ButtonType.RESTART -> onIllegal()
+            ButtonListener.ButtonType.BACK -> back()
         }
     }
 

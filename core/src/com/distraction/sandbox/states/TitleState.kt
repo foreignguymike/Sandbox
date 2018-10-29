@@ -28,11 +28,11 @@ class TitleState(context: Context) : GameState(context) {
         if (!ignoreInput) {
             if (Gdx.input.justTouched()) {
                 ignoreInput = true
-                context.gsm.push(TransitionState(context, PlayState(context, 1)))
+                context.gsm.push(TransitionState(context, LevelSelectState(context)))
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 ignoreInput = true
-                context.gsm.push(TransitionState(context, PlayState(context, 1)))
+                context.gsm.push(TransitionState(context, LevelSelectState(context)))
             }
         }
 

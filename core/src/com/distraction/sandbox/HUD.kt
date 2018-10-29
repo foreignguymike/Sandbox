@@ -26,7 +26,7 @@ class Button(val image: TextureRegion, val rect: Rectangle)
 class NumberLabel(val image: TextureRegion, val pos: Vector2, var num: Int)
 
 class HUD(context: Context, private val buttonListener: ButtonListener) {
-    private val touchUnprojected = Vector3()
+    private val touchPoint = Vector3()
 
     private val buttons = hashMapOf(
             LEFT to
@@ -69,11 +69,11 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
 
     fun update(dt: Float) {
         if (Gdx.input.isTouched) {
-            touchUnprojected.set(1f * Gdx.input.x, 1f * Gdx.input.y, 0f)
-            cam.unproject(touchUnprojected)
+            touchPoint.set(1f * Gdx.input.x, 1f * Gdx.input.y, 0f)
+            cam.unproject(touchPoint)
 
             buttons.forEach { key, value ->
-                if (value.rect.contains(touchUnprojected.x, touchUnprojected.y)) {
+                if (value.rect.contains(touchPoint.x, touchPoint.y)) {
                     buttonListener.onButtonPressed(key)
                 }
             }
@@ -93,7 +93,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
         }
         labels.forEach {
             sb.draw(it.image, it.pos.x, it.pos.y)
-            numberFont.render(sb, it.num, it.pos.x + it.image.regionWidth + 5, it.pos.y)
+            numberFont.render(sb, it.pos.x + it.image.regionWidth + 5, it.pos.y, it.num)
         }
     }
 }
