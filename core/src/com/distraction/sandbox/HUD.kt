@@ -23,8 +23,13 @@ interface ButtonListener {
     fun onButtonPressed(type: ButtonType)
 }
 
-class Button(val image: TextureRegion, x: Float = 0f, y: Float = 0f, val color: Color = Color(1f, 1f, 1f, 1f), val centered: Boolean = false) {
-    val rect: Rectangle = Rectangle(if (centered) (Constants.WIDTH - image.regionWidth) / 2f else x, y, 1f * image.regionWidth, 1f * image.regionHeight)
+class Button(val image: TextureRegion, val rect: Rectangle, val color: Color = Color(1f, 1f, 1f, 1f), val centered: Boolean = false) {
+    constructor(image: TextureRegion, x: Float = 0f, y: Float = 0f, color: Color = Color(1f, 1f, 1f, 1f), centered: Boolean = false) :
+            this(
+                    image,
+                    Rectangle(if (centered) (Constants.WIDTH - image.regionWidth) / 2f else x, y, 1f * image.regionWidth, 1f * image.regionHeight),
+                    color,
+                    centered)
 }
 
 class NumberLabel(context: Context, val image: TextureRegion, val pos: Vector2, var num: Int) {
@@ -56,11 +61,11 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
                     Button(context.assets.getAtlas().findRegion("arrowbutton"),
                             21f, 11f,
                             Color(1f, 1f, 1f, alpha)),
-            RESTART to
-                    Button(context.assets.getAtlas().findRegion("restart"),
-                            5f, 115f),
             BACK to
                     Button(context.assets.getAtlas().findRegion("back"),
+                            5f, 115f),
+            RESTART to
+                    Button(context.assets.getAtlas().findRegion("restart"),
                             5f, 98f))
 
     private val labels = arrayOf(
@@ -74,8 +79,6 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
                     context.assets.getAtlas().findRegion("moves"),
                     Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 25f),
                     0))
-
-    private val numberFont = NumberFont(context)
 
     fun setBest(best: Int) {
         labels[0].num = best

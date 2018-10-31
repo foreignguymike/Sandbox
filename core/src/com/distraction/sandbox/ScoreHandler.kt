@@ -37,6 +37,4 @@ class ScoreHandler {
             flush()
         }
     }
-
-    fun locked(index: Int) = index != 0 && scores[index - 1] == 0
 }

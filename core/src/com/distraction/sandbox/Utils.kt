@@ -2,15 +2,10 @@ package com.distraction.sandbox
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 
@@ -26,7 +21,7 @@ fun AssetManager.getAtlas(str: String = "sandboxpack.atlas") = get(str, TextureA
 
 fun log(str: String) = Gdx.app.log("tag", str)
 
-inline fun SpriteBatch.use(action: () -> Unit): Unit {
+inline fun SpriteBatch.use(action: () -> Unit) {
     begin()
     action()
     end()
@@ -36,8 +31,12 @@ fun SpriteBatch.drawRotated(region: TextureRegion, x: Float, y: Float, rotation:
     draw(region, x, y, region.regionWidth / 2f, region.regionHeight / 2f, 1f * region.regionWidth, 1f * region.regionHeight, 1f, 1f, rotation)
 }
 
-fun SpriteBatch.draw(button: Button) {
-    draw(button.image, button.rect.x, button.rect.y, button.rect.width, button.rect.height)
+fun SpriteBatch.drawButton(button: Button, hflip: Boolean = false) {
+    if (hflip) {
+        draw(button.image, button.rect.x + button.image.regionWidth, button.rect.y, -button.rect.width, button.rect.height)
+    } else {
+        draw(button.image, button.rect.x, button.rect.y, button.rect.width, button.rect.height)
+    }
 }
 
 fun clearScreen(r: Int = 255, g: Int = 255, b: Int = 255, a: Int = 255) {

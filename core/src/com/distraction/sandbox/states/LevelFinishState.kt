@@ -55,16 +55,16 @@ class LevelFinishState(context: Context, val level: Int, val moves: Int, val bes
             sb.draw(dot, 0f, 0f, Constants.WIDTH, Constants.HEIGHT)
             sb.color = c
 
-            sb.draw(completeImage)
+            sb.drawButton(completeImage)
             bestLabel.render(sb)
             movesLabel.render(sb)
             if (best == 0 || moves < best) {
-                sb.draw(newRecordImage)
+                sb.drawButton(newRecordImage)
             }
 
-            sb.draw(restartButton)
-            sb.draw(backButton)
-            sb.draw(nextButton)
+            sb.drawButton(restartButton)
+            sb.drawButton(backButton)
+            sb.drawButton(nextButton)
         }
     }
 }
