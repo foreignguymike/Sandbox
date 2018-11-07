@@ -167,7 +167,7 @@ class Player(context: Context, tileMap: TileMap, private val moveListener: MoveL
     }
 
     override fun update(dt: Float) {
-        moveToDest((if (teleporting && justTeleported) teleportSpeed else speed) * dt * (if (sliding) 4f else if (superjump) 1.5f else 1f))
+        moveToDest((if (teleporting && justTeleported) teleportSpeed else speed) * dt * (if (sliding) 4f else if (superjump) 2f else 1f))
 
         if (atDestination()) {
             if (!tileMap.contains(row, col)) {

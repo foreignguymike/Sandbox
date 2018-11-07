@@ -51,6 +51,15 @@ class TileMapData {
                         1, 0, 1, 1, 0, 1,
                         1, 1, 1, 1, 1, 1
                 )),
+                TileMapDataModel(7, 6, intArrayOf(
+                        0, 1, 1, 1, 1, 0,
+                        0, 1, 0, 0, 1, 0,
+                        1, 1, 1, 1, 1, 1,
+                        1, 0, 1, 1, 0, 1,
+                        1, 1, 1, 1, 1, 1,
+                        0, 1, 0, 0, 1, 0,
+                        0, 1, 1, 1, 1, 0
+                ), startRow = 3, startCol = 2),
 
                 ////////////////// ARROW LEVELS
 
@@ -85,8 +94,12 @@ class TileMapData {
                         1, 1, 1, 1,
                         1, 1, 1, 1,
                         1, 1, 1, 1
-                ), Array(8) { if (it < 4) arrowDown(0, it) else arrowUp(2, it - 4) },
-                1, 0),
+                ), arrayOf(
+                        arrowDown(0, 1),
+                        arrowDown(0, 2),
+                        arrowUp(2, 1),
+                        arrowUp(2, 2)),
+                        1, 0),
                 TileMapDataModel(4, 4, intArrayOf(
                         1, 1, 1, 1,
                         1, 1, 1, 1,
@@ -95,7 +108,7 @@ class TileMapData {
                 ), arrayOf(
                         arrowLeft(1, 1),
                         arrowUp(1, 2),
-                        arrowRight(2,2),
+                        arrowRight(2, 2),
                         arrowDown(2, 1))),
 
                 //////////////// SUPER JUMP LEVELS
@@ -165,6 +178,24 @@ class TileMapData {
                         arrowDown(0, 1), arrowUp(3, 2),
                         superJump(1, 1), superJump(2, 2))),
 
+                TileMapDataModel(5, 5, intArrayOf(
+                        1, 1, 0, 1, 1,
+                        1, 1, 1, 1, 1,
+                        0, 1, 1, 1, 0,
+                        1, 1, 1, 1, 1,
+                        1, 1, 0, 1, 1
+                ), arrayOf(
+                        arrowLeft(0, 1), arrowDown(0, 0), arrowRight(1, 0),
+                        arrowDown(3, 0), arrowRight(4, 0), arrowUp(4, 1),
+                        arrowRight(4, 3), arrowUp(4, 4), arrowLeft(3, 4),
+                        arrowUp(1, 4), arrowLeft(0, 4), arrowDown(0, 3)),
+                        2, 2),
+
+                TileMapDataModel(5, 5, intArrayOf(
+                        1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1
+                ), arrayOf(arrowUp(3, 2),
+                        arrowDown(1, 2))),
+
                 //////////////// TELEPORT LEVELS
 
                 TileMapDataModel(5, 5, intArrayOf(
@@ -183,6 +214,14 @@ class TileMapData {
                 ), arrayOf(
                         superJump(1, 1),
                         superJump(2, 2))),
+                TileMapDataModel(5, 3, intArrayOf(
+                        0, 1, 0,
+                        1, 1, 1,
+                        1, 1, 1,
+                        1, 1, 1,
+                        0, 1, 0
+                ), arrayOf(
+                        teleport(0, 1, 4, 1))),
 
                 ///////////// HARD LEVELS
 

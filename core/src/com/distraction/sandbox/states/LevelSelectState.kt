@@ -84,8 +84,9 @@ class LevelSelectState(context: Context, private var page: Int = 0) : GameState(
             sb.projectionMatrix = staticCam.combined
             sb.draw(levelSelectImage, (Constants.WIDTH - levelSelectImage.regionWidth) / 2, Constants.HEIGHT - levelSelectImage.regionHeight - 8)
             sb.draw(backButton.image, backButton.rect.x, backButton.rect.y)
-            sb.drawButton(leftButton, true)
-            sb.drawButton(rightButton)
+
+            if (page > 0) sb.drawButton(leftButton, true)
+            if (page < maxPages - 1) sb.drawButton(rightButton)
 
             sb.projectionMatrix = camera.combined
             levels.forEachIndexed { i, it ->

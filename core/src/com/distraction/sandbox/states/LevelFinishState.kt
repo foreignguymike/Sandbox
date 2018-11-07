@@ -15,8 +15,8 @@ class LevelFinishState(context: Context, val level: Int, val moves: Int, val bes
     private val movesLabel = NumberLabel(context, context.assets.getAtlas().findRegion("moves"), Vector2(Constants.WIDTH / 2 - 20f, Constants.HEIGHT / 2f - 10), moves)
     private val newRecordImage = Button(context.assets.getAtlas().findRegion("newrecord"), 0f, 40f, centered = true)
 
-    private val restartButton = Button(context.assets.getAtlas().findRegion("restart"), 5f, 115f)
-    private val backButton = Button(context.assets.getAtlas().findRegion("back"),5f, 98f)
+    private val restartButton = Button(context.assets.getAtlas().findRegion("restart"), 5f, 98f)
+    private val backButton = Button(context.assets.getAtlas().findRegion("back"),5f, 115f)
     private val nextButton = Button(context.assets.getAtlas().findRegion("next"), 0f, 15f, centered = true)
 
     init {
