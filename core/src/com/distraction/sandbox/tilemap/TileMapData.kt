@@ -304,7 +304,7 @@ class TileMapData {
                 ), arrayOf(
                         teleport(0, 1, 4, 5),
                         teleport(0, 5, 4, 1)),
-                        2, 3, 26),
+                        2, 3, 22),
 
                 TileMapDataModel(5, 5, intArrayOf(
                         0, 1, 0, 1, 0,

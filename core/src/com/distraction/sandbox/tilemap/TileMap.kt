@@ -109,7 +109,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
 
     fun isValidTile(row: Int, col: Int): Boolean {
         if (row < 0 || row >= levelData.numRows || col < 0 || col >= levelData.numCols) return false
-        return levelData.grid[row * levelData.numCols + col] == 1
+        return getTile(row, col).value != 0
     }
 
     fun contains(row: Int, col: Int) = row >= 0 && row < levelData.numRows && col >= 0 && col <= levelData.numCols && getTile(row, col).value != 0
