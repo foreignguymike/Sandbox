@@ -23,7 +23,7 @@ interface ButtonListener {
     fun onButtonPressed(type: ButtonType)
 }
 
-class Button(val image: TextureRegion, val rect: Rectangle, val color: Color = Color(1f, 1f, 1f, 1f), val centered: Boolean = false) {
+open class Button(val image: TextureRegion, val rect: Rectangle, val color: Color = Color(1f, 1f, 1f, 1f), val centered: Boolean = false) {
     constructor(image: TextureRegion, x: Float = 0f, y: Float = 0f, color: Color = Color(1f, 1f, 1f, 1f), centered: Boolean = false) :
             this(
                     image,
@@ -71,22 +71,30 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     private val labels = arrayOf(
             NumberLabel(
                     context,
-                    context.assets.getAtlas().findRegion("best"),
+                    context.assets.getAtlas().findRegion("goal"),
                     Vector2(Constants.WIDTH - 50f, Constants.HEIGHT - 16f),
                     0),
             NumberLabel(
                     context,
+                    context.assets.getAtlas().findRegion("best"),
+                    Vector2(Constants.WIDTH - 50f, Constants.HEIGHT - 25f),
+                    0),
+            NumberLabel(
+                    context,
                     context.assets.getAtlas().findRegion("moves"),
-                    Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 25f),
+                    Vector2(Constants.WIDTH - 55f, Constants.HEIGHT - 34f),
                     0))
 
+    fun setGoal(goal: Int) {
+        labels[0].num = goal
+    }
     fun setBest(best: Int) {
-        labels[0].num = best
+        labels[1].num = best
     }
 
-    fun getBest() = labels[0].num
-    fun incrementMoves() = labels[1].num++
-    fun getMoves() = labels[1].num
+    fun getBest() = labels[1].num
+    fun incrementMoves() = labels[2].num++
+    fun getMoves() = labels[2].num
 
     private val cam = OrthographicCamera().apply {
         setToOrtho(false, Constants.WIDTH, Constants.HEIGHT)

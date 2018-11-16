@@ -25,6 +25,7 @@ class LevelMaker : ClickTypeListener, ActionListener {
         menubar.add(fileMenu)
 
         fileMenu.add(createMenuItem("Export", KeyEvent.VK_E))
+        fileMenu.add(createMenuItem("Export active", KeyEvent.VK_A))
         frame.jMenuBar = menubar
 
         frame.contentPane = JPanel().apply {
@@ -46,6 +47,11 @@ class LevelMaker : ClickTypeListener, ActionListener {
             when (e.actionCommand) {
                 "Export" -> {
                     val str = gridPanel.createLevelText()
+                    JOptionPane.showMessageDialog(frame, str)
+                    Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(str), null)
+                }
+                "Export active" -> {
+                    val str = gridPanel.createLevelText(true)
                     JOptionPane.showMessageDialog(frame, str)
                     Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(str), null)
                 }

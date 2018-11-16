@@ -34,6 +34,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
         camera.position.set(-100f, player.pp.y + cameraOffset.y, 0f)
         camera.update()
 
+        hud.setGoal(TileMapData.levelData[level - 1].goal)
         hud.setBest(context.scoreHandler.scores[level - 1])
     }
 
@@ -70,7 +71,7 @@ class PlayState(context: Context, private val level: Int) : GameState(context), 
     fun back() {
         if (!ignoreInput) {
             ignoreInput = true
-            context.gsm.push(TransitionState(context, LevelSelectState(context)))
+            context.gsm.push(TransitionState(context, LevelSelectState(context, (level - 1) / LevelSelectState.LEVELS_PER_PAGE)))
         }
     }
 

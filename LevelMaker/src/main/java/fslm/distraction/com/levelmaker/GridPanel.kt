@@ -5,8 +5,9 @@ import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
-class TileObjectData(val tileObject: Tile.TileObject, val row: Int, val col: Int)
+class TileObjectData(val tileObject: Tile.TileObject, val row: Int, val col: Int, var row2: Int = -1, var col2: Int = -1)
 
 class Tile(var row: Int, var col: Int, val rect: Rectangle = Rectangle(), tile: Boolean = false, active: Boolean = false, val objects: ArrayList<TileObject> = arrayListOf()) {
     enum class TileObject {
@@ -19,6 +20,9 @@ class Tile(var row: Int, var col: Int, val rect: Rectangle = Rectangle(), tile: 
 
         fun isArrow() = this == RIGHT || this == UP || this == DOWN || this == LEFT
     }
+
+    var tele: TileObjectData? = null
+    var hasTele = false
 
     var tile = tile
         set(value) {
@@ -52,21 +56,39 @@ class Tile(var row: Int, var col: Int, val rect: Rectangle = Rectangle(), tile: 
             return
         }
 
-        if (tileObject.isArrow()) {
-            objects.removeAll {
+        when {
+            tileObject.isArrow() -> objects.removeAll {
                 it.isArrow() || it == TELEPORT
             }
-        } else if (tileObject == JUMP) {
-            objects.removeAll {
+            tileObject == JUMP -> objects.removeAll {
                 it == TELEPORT
             }
-        } else if (tileObject == TELEPORT) {
-            objects.removeAll {
+            tileObject == TELEPORT -> objects.removeAll {
                 it.isArrow() || it == JUMP
             }
         }
         val index = if (tileObject.isArrow()) objects.size else 0
         objects.add(index, tileObject)
+        hasTele = false
+    }
+
+    fun removeTeleport() {
+        tele = null
+        objects.removeAll {
+            it == TELEPORT
+        }
+    }
+
+    fun teleportObject(row: Int, col: Int) {
+        if (!tile) {
+            return
+        }
+        tele?.let {
+            it.row2 = row
+            it.col2 = col
+        } ?: run {
+            tele = TileObjectData(TELEPORT, row, col)
+        }
     }
 
     fun draw(g: Graphics2D) {
@@ -107,9 +129,39 @@ class Tile(var row: Int, var col: Int, val rect: Rectangle = Rectangle(), tile: 
                     g.color = jumpColor
                     g.drawRect(rect.width / 4, rect.height / 4, rect.width / 2, rect.height / 2)
                 }
+                else -> {
+                }
+            }
+        }
+        g.color = c
+        g.stroke = s
+        g.translate(-rect.x, -rect.y)
+    }
+
+    fun drawTeleports(g: Graphics2D) {
+        g.translate(rect.x, rect.y)
+        val c = g.color
+        val s = g.stroke
+        g.stroke = stroke3
+        for (tileObject in objects) {
+            when (tileObject) {
                 TELEPORT -> {
                     g.color = teleportColor
                     g.drawOval(rect.width / 4, rect.height / 4, rect.width / 2, rect.height / 2)
+                    tele?.let {
+                        if (it.row2 >= 0 && it.col2 >= 0) {
+                            val xdiff = (it.col2 - it.col) * rect.width
+                            val ydiff = (it.row2 - it.row) * rect.height
+                            g.drawOval(
+                                    rect.width / 4 + xdiff,
+                                    rect.height / 4 + ydiff,
+                                    rect.width / 2,
+                                    rect.height / 2)
+                            g.drawLine(rect.width / 2, rect.height / 2, rect.width / 2 + xdiff, rect.height / 2 + ydiff)
+                        }
+                    }
+                }
+                else -> {
                 }
             }
         }
@@ -126,16 +178,30 @@ fun JPanel.paintImmediately() = paintImmediately(0, 0, width, height)
 class GridPanel : JPanel() {
     var clickType = TilePanel.ClickType.TILE
         set(value) {
+            if (value != TilePanel.ClickType.TELEPORT) {
+                gridTele?.let {
+                    val index = tileToIndex(it.row, it.col)
+                    tiles[index].removeTeleport()
+                    val index2 = tileToIndex(it.row2, it.col2)
+                    if (index2 > 0) {
+                        tiles[index2].hasTele = false
+                    }
+                }
+                gridTele = null
+                paintImmediately()
+            }
+
             if (value == TilePanel.ClickType.CLEAR) {
                 for (tile in tiles) {
                     tile.tile = false
                 }
+                moveCount = -1
                 paintImmediately()
             } else if (value == TilePanel.ClickType.DEACTIVATE) {
                 for (tile in tiles) {
                     tile.active = false
                 }
-                moveCount = 0
+                moveCount = -1
                 paintImmediately()
             } else {
                 field = value
@@ -153,29 +219,57 @@ class GridPanel : JPanel() {
             rect.setBounds(x, y, size, size)
         }
     }
-    var moveCount = 0
+    var moveCount = -1
+
+    var gridTele: TileObjectData? = null
 
     init {
         preferredSize = Dimension(size * numCols, size * numRows)
         addMouseListener(object : MouseAdapter() {
             override fun mousePressed(e: MouseEvent?) {
                 e?.let {
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        moveCount--
+                        paintImmediately()
+                        return
+                    }
                     val (row, col) = positionToTile(e.x, e.y)
-                    val index = row * numCols + col
+                    val index = tileToIndex(row, col)
                     with(tiles[index]) {
                         when (clickType) {
                             TilePanel.ClickType.TILE -> tile = !tile
                             TilePanel.ClickType.ACTIVE -> {
-                                active = !active
-                                moveCount++
+                                if (tile) {
+                                    active = !active
+                                    if (!e.isControlDown) {
+                                        moveCount++
+                                    }
+                                }
+
                             }
                             TilePanel.ClickType.RIGHT -> tileObject(RIGHT)
                             TilePanel.ClickType.UP -> tileObject(UP)
                             TilePanel.ClickType.DOWN -> tileObject(DOWN)
                             TilePanel.ClickType.LEFT -> tileObject(LEFT)
                             TilePanel.ClickType.JUMP -> tileObject(JUMP)
-                            TilePanel.ClickType.TELEPORT -> tileObject(TELEPORT)
-                            else -> {}
+                            TilePanel.ClickType.TELEPORT -> {
+                                gridTele?.let {
+                                    if (tile) {
+                                        val index2 = tileToIndex(it.row, it.col)
+                                        tiles[index2].teleportObject(row, col)
+                                        hasTele = true
+                                        gridTele = null
+                                    }
+                                } ?: run {
+                                    if (tile) {
+                                        gridTele = TileObjectData(TELEPORT, row, col)
+                                        tileObject(TELEPORT)
+                                        teleportObject(row, col)
+                                    }
+                                }
+                            }
+                            else -> {
+                            }
                         }
                     }
                     paintImmediately()
@@ -190,6 +284,9 @@ class GridPanel : JPanel() {
         val g2 = g as Graphics2D
         for (tile in tiles) {
             tile.draw(g2)
+        }
+        for (tile in tiles) {
+            tile.drawTeleports(g2)
         }
         val c = g2.color
         g2.color = Color.BLACK
@@ -209,7 +306,7 @@ class GridPanel : JPanel() {
     fun indexToTile(index: Int) = Vector2(index / numCols, index % numCols)
     fun tileToIndex(row: Int, col: Int) = row * numCols + col
 
-    fun createLevelText(): String {
+    fun createLevelText(active: Boolean = false): String {
         val sb = StringBuilder()
 
         var minRow = numRows
@@ -246,9 +343,17 @@ class GridPanel : JPanel() {
                 val tile = tiles[index]
                 val arow = row - minRow
                 val acol = col - minCol
-                grid.add(if (tile.tile) 1 else 0)
+                grid.add(if (tile.tile) { if (active && tile.active) 2 else 1 } else 0)
                 for (tileObject in tile.objects) {
-                    objects.add(TileObjectData(tileObject, arow, acol))
+                    if (tileObject == TELEPORT) {
+                        tile.tele?.let {
+                            val arow2 = it.row2 - minRow
+                            val acol2 = it.col2 - minCol
+                            objects.add(TileObjectData(tileObject, arow, acol, arow2, acol2))
+                        }
+                    } else {
+                        objects.add(TileObjectData(tileObject, arow, acol))
+                    }
                 }
             }
         }
@@ -266,7 +371,7 @@ class GridPanel : JPanel() {
                     DOWN -> "arrowDown(${it.row}, ${it.col})"
                     LEFT -> "arrowLeft(${it.row}, ${it.col})"
                     JUMP -> "superJump(${it.row}, ${it.col})"
-                    TELEPORT -> "teleport(${it.row}, ${it.col})"
+                    TELEPORT -> "teleport(${it.row}, ${it.col}, ${it.row2}, ${it.col2})"
                 }
             })}))")
         }
@@ -277,6 +382,7 @@ class GridPanel : JPanel() {
 fun <T> Iterable<T>.joinToString(separator: CharSequence = ", ", separator2: CharSequence = "", separator2interval: Int = 0, prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...", transform: ((T) -> CharSequence)? = null): String {
     return joinTo(StringBuilder(), separator, separator2, separator2interval, prefix, postfix, limit, truncated, transform).toString()
 }
+
 fun <T, A : Appendable> Iterable<T>.joinTo(buffer: A, separator: CharSequence = ", ", separator2: CharSequence = "", separator2interval: Int = 0, prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...", transform: ((T) -> CharSequence)? = null): A {
     buffer.append(prefix)
     var count = 0
@@ -295,6 +401,7 @@ fun <T, A : Appendable> Iterable<T>.joinTo(buffer: A, separator: CharSequence = 
     buffer.append(postfix)
     return buffer
 }
+
 fun <T> Appendable.appendElement(element: T, transform: ((T) -> CharSequence)?) {
     when {
         transform != null -> append(transform(element))

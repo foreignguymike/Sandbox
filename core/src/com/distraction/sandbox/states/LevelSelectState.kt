@@ -4,13 +4,19 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.distraction.sandbox.*
 import com.distraction.sandbox.tilemap.TileMapData
 
 class LevelSelectState(context: Context, private var page: Int = 0) : GameState(context) {
+    companion object {
+        const val LEVELS_PER_PAGE = 18
+    }
+
     private val levelIcon = context.assets.getAtlas().findRegion("levelicon")
+    private val levelCheck = context.assets.getAtlas().findRegion("levelcheck")
     private val colSize = 6
     private val maxPages = MathUtils.ceil(TileMapData.levelData.size / 18f)
 
@@ -47,9 +53,6 @@ class LevelSelectState(context: Context, private var page: Int = 0) : GameState(
                 touchPoint.set(1f * Gdx.input.x, 1f * Gdx.input.y, 0f)
                 camera.unproject(touchPoint)
                 levels.forEachIndexed { i, it ->
-                    //                    if (context.scoreHandler.locked(i)) {
-//                        return@forEachIndexed
-//                    }
                     if (it.rect.contains(touchPoint) && i < TileMapData.levelData.size) {
                         ignoreInput = true
                         context.gsm.push(TransitionState(context, PlayState(context, i + 1)))
@@ -91,16 +94,17 @@ class LevelSelectState(context: Context, private var page: Int = 0) : GameState(
             sb.projectionMatrix = camera.combined
             levels.forEachIndexed { i, it ->
                 val c = sb.color
-//                if (context.scoreHandler.locked(i)) {
-//                    sb.color = disableColor
-//                }
-                if (context.scoreHandler.scores[i] == 0) {
+                val best = context.scoreHandler.scores[i]
+                if (best == 0) {
                     sb.color = disableColor
                 }
                 sb.draw(it.image, it.rect.x, it.rect.y)
                 numberFont.num = i + 1
                 numberFont.render(sb, it.rect.x + levelIcon.regionWidth / 2, it.rect.y + (levelIcon.regionHeight - 6) / 2)
                 sb.color = c
+                if (best > 0 && best <= TileMapData.levelData[i].goal) {
+                    sb.draw(levelCheck, it.rect.x + (it.rect.width - levelCheck.regionWidth) / 2, it.rect.y - 2)
+                }
             }
         }
     }

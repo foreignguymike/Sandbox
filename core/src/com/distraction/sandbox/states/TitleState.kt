@@ -10,7 +10,7 @@ import com.distraction.sandbox.tilemap.TileMapDataModel
 import com.distraction.sandbox.tilemap.tileobjects.Player
 
 class TitleState(context: Context) : GameState(context) {
-    private val tileMap = TileMap(context, TileMapDataModel(3, 3, IntArray(9) { 1 }))
+    private val tileMap = TileMap(context, TileMapDataModel(3, 3, IntArray(9) { 1 }, goal = 0))
     private val player = Player(context, tileMap, null)
     private val title = context.assets.getAtlas().findRegion("title")
     private val hudCam = OrthographicCamera().apply {

@@ -29,7 +29,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
 
     private val p = Vector3()
     private val grid = Array(levelData.grid.size) {
-        Tile(context, levelData.grid[it])
+        Tile(context, levelData.grid[it], if (levelData.grid[it] == 2) true else false)
     }
     val otherObjects = arrayListOf<TileObject>()
 
@@ -76,7 +76,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
         for (row in 0 until levelData.numRows) {
             for (col in 0 until levelData.numCols) {
                 val tile = getTile(row, col)
-                if (tile.value == 1) {
+                if (tile.value != 0) {
                     toIsometric(col * TileMap.TILE_WIDTH, row * TileMap.TILE_WIDTH, p)
                     sb.draw(tile.getImage(), p.x - TILE_WIDTH / 2, p.y - TILE_IHEIGHT * 2)
                 }
@@ -120,7 +120,7 @@ class TileMap(private val context: Context, val levelData: TileMapDataModel) {
         for (row in 0 until levelData.numRows) {
             for (col in 0 until levelData.numCols) {
                 val tile = getTile(row, col)
-                if (tile.value == 1 && !tile.active) {
+                if (tile.value != 0 && !tile.active) {
                     return false
                 }
             }

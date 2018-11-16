@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.distraction.sandbox.*
+import com.distraction.sandbox.tilemap.TileMapData
 
 class LevelFinishState(context: Context, val level: Int, val moves: Int, val best: Int) : GameState(context) {
     private val dot = context.assets.getAtlas().findRegion("dot")
@@ -28,12 +29,12 @@ class LevelFinishState(context: Context, val level: Int, val moves: Int, val bes
             if (Gdx.input.justTouched()) {
                 touchPoint.set(1f * Gdx.input.x, 1f * Gdx.input.y, 0f)
                 camera.unproject(touchPoint)
-                if (nextButton.rect.contains(touchPoint)) {
+                if (level < TileMapData.levelData.size && nextButton.rect.contains(touchPoint)) {
                     ignoreInput = true
                     context.gsm.push(TransitionState(context, PlayState(context, level + 1), 2))
                 } else if (backButton.rect.contains(touchPoint)) {
                     ignoreInput = true
-                    context.gsm.push(TransitionState(context, LevelSelectState(context), 2))
+                    context.gsm.push(TransitionState(context, LevelSelectState(context, (level - 1) / LevelSelectState.LEVELS_PER_PAGE), 2))
                 } else if (restartButton.rect.contains(touchPoint)) {
                     ignoreInput = true
                     context.gsm.push(TransitionState(context, PlayState(context, level), 2))
@@ -64,7 +65,7 @@ class LevelFinishState(context: Context, val level: Int, val moves: Int, val bes
 
             sb.drawButton(restartButton)
             sb.drawButton(backButton)
-            sb.drawButton(nextButton)
+            if (level < TileMapData.levelData.size) sb.drawButton(nextButton)
         }
     }
 }
