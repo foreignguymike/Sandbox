@@ -108,7 +108,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
             touchPoint.set(1f * Gdx.input.x, 1f * Gdx.input.y, 0f)
             cam.unproject(touchPoint)
 
-            buttons.forEach { key, value ->
+            buttons.forEach { (key, value) ->
                 if (value.rect.contains(touchPoint)) {
                     buttonListener.onButtonPressed(key)
                 }
@@ -119,7 +119,7 @@ class HUD(context: Context, private val buttonListener: ButtonListener) {
     fun render(sb: SpriteBatch) {
         sb.projectionMatrix = fontCam.combined
         sb.projectionMatrix = cam.combined
-        buttons.forEach { key, value ->
+        buttons.forEach { (key, value) ->
             val c = sb.color
             sb.color = value.color
             when (key) {
